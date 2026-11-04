@@ -71,7 +71,7 @@ a:focus-visible,button:focus-visible {outline:2px solid var(--accent);outline-of
 .contributions {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
 .contribution {display:block;position:relative;padding:24px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(140deg,var(--glass),transparent)}
 
-.contribution h4 {font-size:20px;font-weight:550;color:var(--accent);margin-bottom:13px}
+.contribution h4 {font-size:21px;font-weight:600;color:var(--ink);margin-bottom:13px}
 .contribution p {font-size:18px;color:var(--copy);line-height:1.85}
 .skills-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .skill {padding:23px 24px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(130deg,var(--glass),transparent);transition:transform .25s,border-color .25s,box-shadow .25s}
@@ -166,13 +166,13 @@ a:focus-visible,button:focus-visible {outline:2px solid var(--accent);outline-of
 .research-overview{display:grid;grid-template-columns:1.25fr 1fr;align-items:center;gap:34px;padding:3px 0 9px}
 .research-summary p{max-width:760px}
 .research-domains{display:flex;flex-wrap:wrap;gap:8px 18px;align-content:center}
-.domain-tag{display:inline-block;padding:3px 0;border:0;border-radius:0;background:none;font-size:15px;line-height:1.5;color:var(--copy);white-space:nowrap;cursor:default}
+.domain-tag{display:inline-block;padding:3px 0;border:0;border-radius:0;background:none;font-size:16px;line-height:1.5;color:var(--copy);white-space:nowrap;cursor:default}
 .domain-tag::before{content:'';display:inline-block;width:4px;height:4px;margin-right:8px;vertical-align:middle;border-radius:50%;background:var(--accent);opacity:.6}
 .findings-panel{padding:23px 25px;border:1px solid var(--line);border-radius:20px;background:var(--wash)}
 .findings-panel>h3{font-size:20px;font-weight:550;margin-bottom:16px}
 .research-findings{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .finding{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:baseline}
-.finding h4{font-size:16px;font-weight:550;color:var(--accent)}
+.finding h4{font-size:17px;font-weight:600;color:var(--ink)}
 .finding p{font-size:17px;color:var(--copy);line-height:1.85}
 .practice{grid-template-columns:1.2fr 1fr;gap:28px;min-height:290px;padding:34px 40px;cursor:pointer;transition:border-color .25s,box-shadow .25s,transform .25s}
 .practice-art{position:relative;grid-column:2;grid-row:1;width:100%;height:220px;min-height:0;overflow:hidden;opacity:1}
@@ -186,5 +186,5 @@ a:focus-visible,button:focus-visible {outline:2px solid var(--accent);outline-of
 .button:active,.practice:active{transform:translateY(0) scale(.99)}
 .skill,.contribution{cursor:default}
 @media(max-width:1100px){.research-overview{grid-template-columns:1fr;gap:18px}.research-findings{grid-template-columns:1fr;gap:15px}.practice{padding:30px}}
-@media(max-width:760px){.method-visual{height:180px;margin-top:12px}.research-summary h3{font-size:24px}.research-overview{padding-bottom:3px}.research-domains{gap:7px 15px}.domain-tag{font-size:14px}.research-findings{gap:18px}.finding{display:block}.finding h4{font-size:17px;margin-bottom:6px}.finding p{font-size:17px}.findings-panel{padding:22px}.practice{display:block;min-height:0;padding:30px 26px}.practice-art{display:none}.practice-link{margin-top:24px}}
+@media(max-width:760px){.method-visual{height:180px;margin-top:12px}.research-summary h3{font-size:24px}.research-overview{padding-bottom:3px}.research-domains{gap:7px 15px}.domain-tag{font-size:15px}.research-findings{gap:18px}.finding{display:block}.finding h4{font-size:17px;margin-bottom:6px}.finding p{font-size:17px}.findings-panel{padding:22px}.practice{display:block;min-height:0;padding:30px 26px}.practice-art{display:none}.practice-link{margin-top:24px}}
 @media print{.contributions{grid-template-columns:1fr}.research-overview{display:block}.contribution,.findings-panel{break-inside:avoid}.contribution{padding:15px}.research-findings{grid-template-columns:1fr}.practice{display:block;min-height:0}.practice-art{display:none}.practice-link{background:none;color:#111;border:1px solid #333;box-shadow:none}.practice-link::after{display:none}}
