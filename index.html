@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <meta name="oai-annotation-editor-default-mode" content="advanced">
   <meta name="description" content="LHC-PROG，计算机专业本科生。模型实现、训练调试与实验分析，以及 MiniCamp 协作实践。">
   <title>LHC-PROG · 研究与实践</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -13,6 +14,7 @@
   <link rel="stylesheet" href="./style.css">
   <script src="./profile.js" defer></script>
   <script src="./script.js" defer></script>
+  <script src="./annotations.js" defer></script>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">跳至正文</a>
@@ -57,5 +59,9 @@
     </section>
   </main>
   <footer class="footer container"><span data-profile="handle">LHC-PROG</span><a class="github-link" href="https://github.com/LHC-PROG" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+  <aside id="annotation-tools" class="annotation-tools" aria-label="页面标注" hidden>
+    <button id="annotation-toggle" type="button" aria-pressed="false" hidden>标注页面</button>
+    <p id="annotation-status" role="status"></p>
+  </aside>
 </body>
 </html>

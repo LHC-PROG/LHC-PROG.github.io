@@ -18,3 +18,9 @@ body.motion-paused *,body.motion-paused *::before,body.motion-paused *::after{an
 @media(max-width:760px){.hero{gap:25px}.method-visual{display:block;width:100%;height:160px;scale:1;transform:none}.method-node{height:52px;width:94px;padding:10px;gap:8px;font-size:17px;animation:none;transform:none}.node-symbol{font-size:23px}.node-read{top:46px;left:12px}.node-build{top:46px;left:calc(50% - 47px);right:auto}.node-test{top:46px;left:auto;right:12px;bottom:auto}.visual-center{display:none}.visual-orbit{inset:-30px -15px}.orbit-second{inset:10px 35px}.practice{padding:28px 26px}}
 @media(max-width:359px){.method-node{width:81px;gap:6px;font-size:16px;padding:8px}.node-build{left:calc(50% - 40px)}.node-read{left:8px}.node-test{right:8px}}
 @media print{.method-visual{display:none}}
+
+.annotation-tools[hidden],.annotation-tools [hidden]{display:none}
+.annotation-tools{position:fixed;right:18px;bottom:18px;z-index:50;max-width:min(390px,calc(100vw - 36px));padding:15px 18px;border:1px solid var(--line);background:var(--paper);box-shadow:0 8px 35px #12201820;font:14px/1.65 var(--sans)}
+.annotation-tools button{padding:8px 15px;background:var(--ink);color:var(--paper);border:0;margin-bottom:8px;font-size:15px}
+.annotation-tools p{color:var(--copy)}
+@media print{.annotation-tools{display:none}}
