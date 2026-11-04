@@ -4,101 +4,58 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Li- / LHC-PROG。985高校计算机专业本科生，专业排名前2%，关注具身智能、VLA模型研究。">
-  <title>Li- / LHC-PROG</title>
+  <meta name="description" content="LHC-PROG，计算机专业本科生。模型实现、训练调试与实验分析，以及 MiniCamp 协作实践。">
+  <title>LHC-PROG · 研究与实践</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script src="./profile.js" defer></script>
   <script src="./script.js" defer></script>
 </head>
-<body>
-  <a class="skip-link" href="#main">跳至主要内容</a>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <div class="header__inner">
-        <a href="#top" class="logo" aria-label="返回顶部">
-          <span class="logo__symbol">✳</span>
-          <span class="logo__text" data-profile="handle">LHC-PROG</span>
-        </a>
-        <button class="theme-toggle" type="button" aria-label="切换主题">
-          <span class="theme-toggle__icon"></span>
-        </button>
-      </div>
-    </div>
-    <div class="header__rule"></div>
+<body id="top">
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="header container">
+    <a class="logo" href="#top" aria-label="返回首页"><span class="logo-mark" aria-hidden="true">✳</span><span data-profile="handle">LHC-PROG</span></a>
+    <nav aria-label="主导航"><a href="#research">研究实践</a><a href="#practice">MiniCamp</a></nav>
+    <button class="theme-toggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></button>
   </header>
-
-  <!-- Main Content -->
-  <main id="main" class="main">
-    <div class="container">
-
-      <!-- Hero Section -->
-      <section class="hero">
-        <h1 class="hero__name" data-profile="name">Li-</h1>
-        <p class="hero__tagline" data-profile="tagline">计算机科学与技术</p>
-        <div class="hero__meta">
-          <span data-profile="rank">专业排名前2%</span>
-          <span class="hero__separator">·</span>
-          <span data-profile="gpa">GPA 92+/100</span>
-        </div>
-        <p class="hero__interests" data-profile="interests_tag">AI Research · Embodied Intelligence</p>
-        <div class="hero__bio" data-profile="bio">
-          <p>关注机器学习、具身智能与大模型轻量化方向。</p>
-        </div>
-        <nav class="hero__links">
-          <a href="https://github.com/LHC-PROG" class="link-button" target="_blank" rel="noopener noreferrer">
-            <span>GitHub</span>
-            <span class="link-button__arrow">↗</span>
-          </a>
-        </nav>
-      </section>
-
-      <!-- Research Section -->
-      <section class="section">
-        <h2 class="section__title">Research</h2>
-        <div class="section__rule"></div>
-        <div id="research-list" class="research-list"></div>
-      </section>
-
-      <!-- Skills Section -->
-      <section class="section">
-        <h2 class="section__title">Technical Skills</h2>
-        <div class="section__rule"></div>
-        <div id="skills-grid" class="skills-grid"></div>
-      </section>
-
-      <!-- Achievements Section -->
-      <section class="section">
-        <h2 class="section__title">Achievements & Honors</h2>
-        <div class="section__rule"></div>
-        <div id="achievements-list" class="achievements-list"></div>
-      </section>
-
-      <!-- Activities Section -->
-      <section class="section">
-        <h2 class="section__title">Activities & Leadership</h2>
-        <div class="section__rule"></div>
-        <div id="activities-list" class="activities-list"></div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__rule"></div>
-      <div class="footer__content">
-        <p>© 2024 Li- / LHC-PROG</p>
-        <p class="footer__note">Built with passion for AI & Open Source</p>
+  <main id="main" class="container">
+    <section class="hero" aria-labelledby="name">
+      <div class="hero-copy">
+        <p class="identity" data-profile="tagline">计算机科学与技术 · 本科生</p>
+        <h1 id="name" data-profile="name">LHC-PROG</h1>
+        <p class="bio" data-profile="bio">关注机器学习，习惯在代码与实验中理解方法。<br>有模型复现、训练调试和对照评测的实践经验。</p>
+        <a class="button github-link" href="https://github.com/LHC-PROG" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </div>
-    </div>
-  </footer>
-
+      <div class="method-visual" aria-label="研究方法：阅读、实现、验证">
+        <canvas id="network" aria-hidden="true"></canvas>
+        <div class="visual-orbit" aria-hidden="true"></div>
+        <div class="visual-orbit orbit-second" aria-hidden="true"></div>
+        <div class="method-node node-read"><span class="node-symbol" aria-hidden="true">⌁</span><span>阅读</span></div>
+        <div class="method-node node-build"><span class="node-symbol" aria-hidden="true">⌘</span><span>实现</span></div>
+        <div class="method-node node-test"><span class="node-symbol" aria-hidden="true">↗</span><span>验证</span></div>
+        <div class="visual-center" aria-hidden="true">✳</div>
+        <button id="motion-toggle" type="button" aria-label="暂停动效" aria-pressed="false">Ⅱ</button>
+      </div>
+    </section>
+    <section id="research" class="section" aria-labelledby="research-title">
+      <div class="section-heading"><h2 id="research-title">研究实践<span class="heading-dot">.</span></h2><span class="section-index" aria-hidden="true">01</span></div>
+      <div class="research-layout">
+        <div class="research-summary"><h3 data-research="title">机器学习模型实验</h3><p data-research="description"></p><div class="research-line" aria-hidden="true"></div></div>
+        <div id="contributions" class="contributions"></div>
+      </div>
+    </section>
+    <section id="skills" class="section" aria-labelledby="skills-title">
+      <div class="section-heading"><h2 id="skills-title">技术能力<span class="heading-dot">.</span></h2><span class="section-index" aria-hidden="true">02</span></div>
+      <div id="skills-grid" class="skills-grid"></div>
+    </section>
+    <section id="practice" class="practice section" aria-labelledby="practice-title">
+      <div class="practice-art" aria-hidden="true"><span class="art-ring"></span><span class="art-ring ring-two"></span><span class="art-cross">✳</span></div>
+      <div class="practice-copy"><p class="practice-label" data-practice="label">黑客松 · 协作实践</p><h2 id="practice-title" data-practice="title">MiniCamp</h2><p class="practice-description" data-practice="description"></p><a id="minicamp-link" class="practice-link" href="https://ttesestt.nanocamp.club/minicamp/" target="_blank" rel="noopener noreferrer">查看活动 <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+  <footer class="footer container"><span data-profile="handle">LHC-PROG</span><a class="github-link" href="https://github.com/LHC-PROG" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
 </body>
 </html>

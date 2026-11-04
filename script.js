@@ -1,276 +1,128 @@
 'use strict';
 (() => {
   const profile = window.PROFILE || {};
-
-  // ========== Theme Toggle ==========
-  const themeToggle = document.querySelector('.theme-toggle');
-  const html = document.documentElement;
-
-  // Load saved theme or default to light
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  html.setAttribute('data-theme', savedTheme);
-
-  themeToggle?.addEventListener('click', () => {
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+  const root = document.documentElement;
+  const toggle = document.querySelector('.theme-toggle');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+    toggle.setAttribute('aria-label', theme === 'dark' ? '切换为浅色主题' : '切换为深色主题');
+  }
+  let savedTheme;
+  try { savedTheme = localStorage.getItem('theme'); } catch {}
+  setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+  toggle.addEventListener('click', () => {
+    const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    setTheme(theme);
+    try { localStorage.setItem('theme', theme); } catch {}
   });
-
-  // ========== Populate Profile Data ==========
-  document.querySelectorAll('[data-profile]').forEach(el => {
-    const key = el.dataset.profile;
-    const value = profile[key];
-    if (typeof value === 'string') {
-      el.textContent = value;
-    }
+  document.title = profile.title || document.title;
+  for (const [attribute, data] of [['data-profile', profile], ['data-research', profile.research], ['data-practice', profile.practice]]) {
+    document.querySelectorAll(`[${attribute}]`).forEach(el => {
+      const value = data?.[el.getAttribute(attribute)];
+      if (typeof value === 'string') el.textContent = value;
+    });
+  }
+  function externalUrl(value) {
+    try { const url = new URL(value); return url.protocol === 'https:' ? url.href : null; } catch { return null; }
+  }
+  const github = externalUrl(profile.github);
+  if (github) document.querySelectorAll('.github-link').forEach(el => { el.href = github; });
+  const minicamp = externalUrl(profile.practice?.url);
+  if (minicamp) document.getElementById('minicamp-link').href = minicamp;
+  function element(tag, className, text) {
+    const el = document.createElement(tag); el.className = className; el.textContent = text; return el;
+  }
+  const contributions = document.getElementById('contributions');
+  (profile.research?.contributions || []).forEach(item => {
+    const article = element('article', 'contribution', '');
+    article.append(element('h4', '', item.title), element('p', '', item.text));
+    contributions.append(article);
   });
-
-  // ========== Render Research Projects ==========
-  const researchList = document.getElementById('research-list');
-  if (researchList && Array.isArray(profile.research)) {
-    profile.research.forEach(item => {
-      const article = document.createElement('article');
-      article.className = 'research-item';
-
-      // Header
-      const header = document.createElement('div');
-      header.className = 'research-item__header';
-
-      const titleGroup = document.createElement('div');
-      titleGroup.className = 'research-item__title-group';
-
-      const title = document.createElement('h3');
-      title.textContent = item.title;
-      titleGroup.appendChild(title);
-
-      const subtitle = document.createElement('div');
-      subtitle.className = 'research-item__subtitle';
-      subtitle.textContent = item.subtitle;
-      titleGroup.appendChild(subtitle);
-
-      const meta = document.createElement('div');
-      meta.className = 'research-item__meta';
-
-      const period = document.createElement('span');
-      period.className = 'research-item__period';
-      period.textContent = item.period;
-      meta.appendChild(period);
-
-      const role = document.createElement('span');
-      role.className = 'research-item__role';
-      role.textContent = item.role;
-      meta.appendChild(role);
-
-      // Add status badge if exists
-      if (item.status) {
-        const status = document.createElement('span');
-        status.className = 'research-item__status';
-        status.textContent = item.status;
-        meta.appendChild(status);
-      }
-
-      header.appendChild(titleGroup);
-      header.appendChild(meta);
-      article.appendChild(header);
-
-      // Description
-      const desc = document.createElement('p');
-      desc.className = 'research-item__description';
-      desc.textContent = item.description;
-      article.appendChild(desc);
-
-      // Achievements
-      if (item.achievements && item.achievements.length > 0) {
-        const achievementsList = document.createElement('ul');
-        achievementsList.className = 'research-item__achievements';
-        item.achievements.forEach(achievement => {
-          const li = document.createElement('li');
-          li.textContent = achievement;
-          achievementsList.appendChild(li);
-        });
-        article.appendChild(achievementsList);
-      }
-
-      // Tags
-      if (item.tags && item.tags.length > 0) {
-        const tagsDiv = document.createElement('div');
-        tagsDiv.className = 'research-item__tags';
-        item.tags.forEach(tag => {
-          const tagSpan = document.createElement('span');
-          tagSpan.className = 'research-item__tag';
-          tagSpan.textContent = tag;
-          tagsDiv.appendChild(tagSpan);
-        });
-        article.appendChild(tagsDiv);
-      }
-
-      researchList.appendChild(article);
+  const skills = document.getElementById('skills-grid');
+  (profile.skills || []).forEach(item => {
+    const article = element('article', 'skill', '');
+    article.append(element('h3', '', item.title), element('p', 'skill-tools', item.tools), element('p', 'skill-description', item.description));
+    skills.append(article);
+  });
+  // Content stays visible without animation support or when reduced motion is requested.
+  if ('IntersectionObserver' in window && !reduced.matches) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold: .06 });
+    document.querySelectorAll('.section').forEach(el => { el.classList.add('reveal'); observer.observe(el); });
+    reduced.addEventListener('change', event => {
+      if (event.matches) { observer.disconnect(); document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible')); }
     });
   }
-
-  // ========== Render Skills ==========
-  const skillsGrid = document.getElementById('skills-grid');
-  if (skillsGrid && profile.skills) {
-    Object.entries(profile.skills).forEach(([category, items]) => {
-      const card = document.createElement('article');
-      card.className = 'skill-category';
-
-      const title = document.createElement('h3');
-      title.className = 'skill-category__title';
-      title.textContent = category;
-      card.appendChild(title);
-
-      const itemsDiv = document.createElement('div');
-      itemsDiv.className = 'skill-category__items';
-      items.forEach(item => {
-        const span = document.createElement('span');
-        span.className = 'skill-category__item';
-        span.textContent = item;
-        itemsDiv.appendChild(span);
-      });
-      card.appendChild(itemsDiv);
-
-      skillsGrid.appendChild(card);
-    });
-  }
-
-  // ========== Render Achievements ==========
-  const achievementsList = document.getElementById('achievements-list');
-  if (achievementsList && Array.isArray(profile.achievements)) {
-    profile.achievements.forEach(achievement => {
-      const article = document.createElement('article');
-      article.className = 'achievement-item';
-
-      const year = document.createElement('div');
-      year.className = 'achievement-item__year';
-      year.textContent = achievement.year;
-      article.appendChild(year);
-
-      const title = document.createElement('div');
-      title.className = 'achievement-item__title';
-      title.textContent = achievement.title;
-      article.appendChild(title);
-
-      const category = document.createElement('div');
-      category.className = 'achievement-item__category';
-      category.textContent = achievement.category;
-      article.appendChild(category);
-
-      achievementsList.appendChild(article);
-    });
-  }
-
-  // ========== Render Activities ==========
-  const activitiesList = document.getElementById('activities-list');
-  if (activitiesList && Array.isArray(profile.activities)) {
-    profile.activities.forEach(activity => {
-      const article = document.createElement('article');
-      article.className = 'activity-item';
-
-      const header = document.createElement('div');
-      header.className = 'activity-item__header';
-
-      const role = document.createElement('div');
-      role.className = 'activity-item__role';
-      role.textContent = activity.role;
-      header.appendChild(role);
-
-      const period = document.createElement('div');
-      period.className = 'activity-item__period';
-      period.textContent = activity.period;
-      header.appendChild(period);
-
-      article.appendChild(header);
-
-      const org = document.createElement('h3');
-      org.className = 'activity-item__organization';
-      org.textContent = activity.organization;
-      article.appendChild(org);
-
-      const desc = document.createElement('p');
-      desc.className = 'activity-item__description';
-      desc.textContent = activity.description;
-      article.appendChild(desc);
-
-      if (activity.website) {
-        const website = document.createElement('a');
-        website.className = 'activity-item__website';
-        website.href = activity.website;
-        website.target = '_blank';
-        website.rel = 'noopener noreferrer';
-        website.textContent = activity.website;
-        article.appendChild(website);
-      }
-
-      activitiesList.appendChild(article);
-    });
-  }
-
-  // ========== Update GitHub Link ==========
-  const githubLinks = document.querySelectorAll('a[href*="github.com"]');
-  if (profile.contact?.github) {
-    githubLinks.forEach(link => {
-      link.href = profile.contact.github;
-    });
-  }
-
-  // ========== Smooth Scroll ==========
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
-      if (href === '#' || href === '#top') {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      } else {
-        const target = document.querySelector(href);
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+  const visual = document.querySelector('.method-visual');
+  const canvas = document.getElementById('network');
+  const context = canvas.getContext('2d');
+  const motionToggle = document.getElementById('motion-toggle');
+  let width = 0, height = 0, frame = 0, elapsed = 0, lastTime = 0;
+  let paused = reduced.matches, inView = true;
+  const particles = Array.from({ length: 44 }, (_, i) => ({
+    x: ((i * 37.37) % 100) / 100,
+    y: ((i * 61.81) % 100) / 100,
+    phase: i * 2.4
+  }));
+  function drawNetwork() {
+    if (!context || !width) return;
+    context.clearRect(0, 0, width, height);
+    const positions = particles.map(p => ({
+      x: p.x * width + Math.sin(elapsed * .18 + p.phase) * 16,
+      y: p.y * height + Math.cos(elapsed * .14 + p.phase) * 14
+    }));
+    for (let i = 0; i < positions.length; i++) {
+      const p = positions[i];
+      for (let j = i + 1; j < positions.length; j++) {
+        const q = positions[j], distance = Math.hypot(p.x - q.x, p.y - q.y);
+        if (distance < 105) {
+          context.strokeStyle = `rgba(190,219,167,${(1 - distance / 105) * .28})`;
+          context.lineWidth = .8;
+          context.beginPath(); context.moveTo(p.x, p.y); context.lineTo(q.x, q.y); context.stroke();
         }
       }
-    });
-  });
-
-  // ========== Intersection Observer for Fade-in ==========
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, observerOptions);
-
-  // Observe sections
-  document.querySelectorAll('.section, .research-item, .skill-category, .achievement-item, .activity-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(el);
-  });
-
-  // Hero always visible
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    hero.style.opacity = '1';
+      context.fillStyle = i % 5 === 0 ? '#d8e6af' : '#7eab92';
+      context.beginPath(); context.arc(p.x, p.y, i % 5 === 0 ? 2 : 1.2, 0, Math.PI * 2); context.fill();
+    }
   }
-
-  // ========== Console Easter Egg ==========
-  console.log('%c👋 Hi there!', 'font-size: 20px; font-weight: bold;');
-  console.log('%cInterested in the code? Check out the source on GitHub!', 'font-size: 14px;');
-  if (profile.contact?.github) {
-    console.log('%c' + profile.contact.github, 'font-size: 14px; color: #c84848;');
+  function animate(time) {
+    frame = 0;
+    if (paused || document.hidden || !inView) return;
+    elapsed += Math.min((time - (lastTime || time)) / 1000, .05); lastTime = time;
+    drawNetwork(); frame = requestAnimationFrame(animate);
   }
+  function start() { if (!frame && !paused && !document.hidden && inView && context) { lastTime = 0; frame = requestAnimationFrame(animate); } }
+  function stop() { cancelAnimationFrame(frame); frame = 0; }
+  function syncMotion() {
+    document.body.classList.toggle('motion-paused', paused);
+    motionToggle.setAttribute('aria-pressed', String(paused));
+    motionToggle.setAttribute('aria-label', paused ? '开启动效' : '暂停动效');
+    motionToggle.textContent = paused ? '▷' : 'Ⅱ';
+    if (paused) stop(); else start();
+    drawNetwork();
+  }
+  function resize() {
+    const rect = canvas.getBoundingClientRect(); width = rect.width; height = rect.height;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    context?.setTransform(dpr, 0, 0, dpr, 0, 0); drawNetwork();
+  }
+  motionToggle.addEventListener('click', () => { paused = !paused; syncMotion(); });
+  reduced.addEventListener('change', event => { paused = event.matches; syncMotion(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(entries => {
+    inView = entries[0].isIntersecting; if (inView) start(); else stop();
+  }).observe(visual);
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(visual); else addEventListener('resize', resize);
+  resize(); syncMotion();
+  visual.addEventListener('pointermove', event => {
+    if (paused) return;
+    const rect = visual.getBoundingClientRect();
+    visual.style.setProperty('--tilt-x', `${(event.clientY - rect.top - rect.height / 2) / 45}deg`);
+    visual.style.setProperty('--tilt-y', `${(event.clientX - rect.left - rect.width / 2) / -45}deg`);
+  });
+  visual.addEventListener('pointerleave', () => { visual.style.setProperty('--tilt-x', '0deg'); visual.style.setProperty('--tilt-y', '0deg'); });
 })();
