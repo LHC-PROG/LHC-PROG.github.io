@@ -10,7 +10,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script src="./profile.js" defer></script>
   <script src="./script.js" defer></script>
@@ -19,7 +19,7 @@
 <body id="top">
   <a class="skip-link" href="#main">跳至正文</a>
   <header class="header container">
-    <a class="logo" href="#top" aria-label="返回首页"><span class="logo-mark" aria-hidden="true">✳</span><span data-profile="handle">LHC-PROG</span></a>
+    <a class="logo" href="#top" aria-label="返回首页"><svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="m16 3 12 7v13l-12 7-12-7V10Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 10 12 7 12-7M16 17v13M10 7l12 7v7" stroke="currentColor" stroke-width="1.5"/></svg><span data-profile="handle">LHC-PROG</span></a>
     <nav aria-label="主导航"><a href="#research">研究实践</a><a href="#practice">MiniCamp</a></nav>
     <button class="theme-toggle" type="button" aria-label="切换为深色主题" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></button>
   </header>
@@ -29,17 +29,13 @@
         <p class="identity" data-profile="tagline">计算机科学与技术 · 本科生</p>
         <h1 id="name" data-profile="name">LHC-PROG</h1>
         <p class="bio" data-profile="bio">关注机器学习，习惯在代码与实验中理解方法。<br>有模型复现、训练调试和对照评测的实践经验。</p>
-        <a class="button github-link" href="https://github.com/LHC-PROG" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <a class="button github-link" href="https://github.com/LHC-PROG" target="_blank" rel="noopener noreferrer"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.08c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.62 1.22 3.26.93.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.57 0-1.23.44-2.23 1.15-3.02-.12-.28-.5-1.43.11-2.98 0 0 .94-.3 3.08 1.15a10.72 10.72 0 0 1 5.61 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.55.23 2.7.11 2.98.72.79 1.15 1.79 1.15 3.02 0 4.33-2.63 5.28-5.14 5.56.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54A11.2 11.2 0 0 0 12 .8Z"/></svg><span class="button-label">GitHub</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 18 18 6M6 6h12v12"/></svg></span></a>
       </div>
       <div class="method-visual" aria-label="研究方法：阅读、实现、验证">
         <canvas id="network" aria-hidden="true"></canvas>
-        <div class="visual-orbit" aria-hidden="true"></div>
-        <div class="visual-orbit orbit-second" aria-hidden="true"></div>
-        <div class="method-node node-read"><span class="node-symbol" aria-hidden="true">⌁</span><span>阅读</span></div>
-        <div class="method-node node-build"><span class="node-symbol" aria-hidden="true">⌘</span><span>实现</span></div>
-        <div class="method-node node-test"><span class="node-symbol" aria-hidden="true">↗</span><span>验证</span></div>
-        <div class="visual-center" aria-hidden="true">✳</div>
-        <button id="motion-toggle" type="button" aria-label="暂停动效" aria-pressed="false">Ⅱ</button>
+        <div class="method-node node-read"><span class="node-symbol" aria-hidden="true">01</span><span>阅读</span></div>
+        <div class="method-node node-build"><span class="node-symbol" aria-hidden="true">02</span><span>实现</span></div>
+        <div class="method-node node-test"><span class="node-symbol" aria-hidden="true">03</span><span>验证</span></div>
       </div>
     </section>
     <section id="research" class="section" aria-labelledby="research-title">
@@ -54,7 +50,7 @@
       <div id="skills-grid" class="skills-grid"></div>
     </section>
     <section id="practice" class="practice section" aria-labelledby="practice-title">
-      <div class="practice-art" aria-hidden="true"><span class="art-ring"></span><span class="art-ring ring-two"></span><span class="art-cross">✳</span></div>
+      <div class="practice-art" aria-hidden="true"><svg class="prism" viewBox="0 0 360 250" fill="none"><defs><linearGradient id="prism-fill" x1="90" y1="10" x2="280" y2="240" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".17"/><stop offset="1" stop-color="currentColor" stop-opacity=".02"/></linearGradient></defs><g class="prism-grid" stroke="currentColor" stroke-opacity=".13"><path d="M25 190 190 95l145 84M25 210 190 115l145 84M45 222 210 127M85 242 250 147M45 162l165 95M85 140l165 95"/></g><g class="prism-shape" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="m180 24 96 55v110l-96 55-96-55V79Z" fill="url(#prism-fill)"/><path d="m84 79 96 55 96-55M180 134v110M180 24v110M84 189l96-55 96 55" stroke-opacity=".5"/><path d="m180 65 60 35v69l-60 35-60-35v-69Z"/><path d="m120 100 60 35 60-35M180 135v69"/></g><g fill="currentColor"><circle cx="180" cy="24" r="3"/><circle cx="276" cy="189" r="3"/><circle cx="84" cy="79" r="3"/></g></svg></div>
       <div class="practice-copy"><p class="practice-label" data-practice="label">黑客松 · 协作实践</p><h2 id="practice-title" data-practice="title">MiniCamp</h2><p class="practice-description" data-practice="description"></p><a id="minicamp-link" class="practice-link" href="https://ttesestt.nanocamp.club/minicamp/" target="_blank" rel="noopener noreferrer">查看活动 <span aria-hidden="true">↗</span></a></div>
     </section>
   </main>
