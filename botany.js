@@ -46,7 +46,7 @@ export function groundChunk(start,end,{count=1900,seed=1}={}){
  for(let i=0;i<count;i++){
   const z=start+(end-start)*rng(),center=creekX(z),side=rng()<.5?-1:1;
   const isBank=i<count*.68;
-  const x=z< -153?4+(rng()*2-1)*(isBank?17:43):center+side*(isBank?1.85+Math.pow(rng(),1.4)*10:2+rng()*39);
+  const x=z< -144?4+(rng()*2-1)*(isBank?17:43):center+side*(isBank?1.85+Math.pow(rng(),1.4)*10:2+rng()*39);
   const y=terrainHeight(x,z)+rng()*.3;
   const light=rng(),t=THREE.MathUtils.smoothstep(-z,140,180);
   const c=[.17+light*.16+t*.14,.27+light*.2+t*.065,.075+light*.11+t*.025];

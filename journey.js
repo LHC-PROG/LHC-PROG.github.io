@@ -1,6 +1,6 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js';
-import {addAtmosphere} from './atmosphere.js';
+import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-grove4';
+import {addAtmosphere} from './atmosphere.js?v=20261105-grove4';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -94,15 +94,16 @@ async function build(){
  const mountainMaterial=new THREE.MeshBasicMaterial({map:mountainTexture,transparent:true,depthWrite:false,opacity:0,fog:false});
  const mountains=new THREE.Mesh(new THREE.PlaneGeometry(900,100),mountainMaterial);mountains.position.set(0,16,-345);scene.add(mountains);
 
- const skyU={uNight:{value:0},uOpen:{value:0},uAspect:{value:1}};
+ const skyU={uNight:{value:0},uOpen:{value:0},uAspect:{value:1},uSunUv:{value:new THREE.Vector2(.7,.35)}};
  const sky=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.ShaderMaterial({uniforms:skyU,depthWrite:false,depthTest:false,
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,1.,1.);}`,
-  fragmentShader:`varying vec2 vUv;uniform float uNight,uOpen,uAspect;void main(){float h=smoothstep(0.,1.,vUv.y);vec3 day=mix(vec3(.21,.33,.25),vec3(.20,.30,.27),h);vec3 night=mix(vec3(.075,.13,.18),vec3(.045,.075,.14),h);vec3 evening=mix(vec3(.93,.60,.43),vec3(.40,.36,.52),smoothstep(.04,.95,vUv.y));vec3 c=mix(mix(day,night,uNight),evening,uOpen);vec2 q=(vUv-vec2(.23,.42))*vec2(uAspect,1.);float r=length(q);c+=vec3(.7,.43,.15)*exp(-r*r*65.)*uOpen;vec2 moon=(vUv-vec2(.74,.73))*vec2(uAspect,1.);float m=length(moon);c+=vec3(.33,.42,.50)*exp(-m*m*240.)*uNight;c+=vec3(.55,.59,.58)*(1.-smoothstep(.013,.023,m))*uNight;gl_FragColor=vec4(c,1.);}`
+  fragmentShader:`varying vec2 vUv;uniform float uNight,uOpen,uAspect;uniform vec2 uSunUv;void main(){float h=smoothstep(0.,1.,vUv.y);vec3 day=mix(vec3(.21,.33,.25),vec3(.20,.30,.27),h);vec3 night=mix(vec3(.075,.13,.18),vec3(.045,.075,.14),h);vec3 evening=mix(vec3(.93,.60,.43),vec3(.40,.36,.52),smoothstep(.04,.95,vUv.y));vec3 c=mix(mix(day,night,uNight),evening,uOpen);vec2 q=(vUv-uSunUv)*vec2(uAspect,1.);float r=length(q);c+=vec3(.28,.17,.065)*exp(-r*r*42.)*uOpen;vec2 moon=(vUv-vec2(.74,.73))*vec2(uAspect,1.);float m=length(moon);c+=vec3(.33,.42,.50)*exp(-m*m*240.)*uNight;c+=vec3(.55,.59,.58)*(1.-smoothstep(.013,.023,m))*uNight;gl_FragColor=vec4(c,1.);}`
  }));sky.frustumCulled=false;sky.renderOrder=-100;scene.add(sky);
  const sunset=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.ShaderMaterial({uniforms:{uOpen:skyU.uOpen},transparent:true,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
   fragmentShader:`varying vec2 vUv;uniform float uOpen;void main(){float r=length(vUv-.5)*2.;float core=1.-smoothstep(.16,.25,r);float halo=exp(-r*r*5.);float alpha=(core*.85+halo*.35)*uOpen;gl_FragColor=vec4(mix(vec3(1.,.53,.20),vec3(1.,.94,.67),core),alpha);}`}));
  sunset.position.set(60,34,-305);scene.add(sunset);
+ const sunProjection=new THREE.Vector3();
 
  const shaftMaterial=new THREE.ShaderMaterial({uniforms:{uTime:u.uTime,uNight:u.uNight},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
@@ -139,6 +140,7 @@ async function build(){
   const ahead=z-16,lookX=THREE.MathUtils.lerp(creekX(ahead),5,open*.78),lookY=2.4+terrainHeight(lookX,ahead)+open*1.2;
   const ease=1-Math.exp(-Math.max(delta,.016)*3.6);smoothPointer.x+=(pointer.x-smoothPointer.x)*ease;smoothPointer.y+=(pointer.y-smoothPointer.y)*ease;
   camera.position.set(x+smoothPointer.x*.6,y-smoothPointer.y*.24,z);camera.lookAt(lookX+smoothPointer.x*.9,lookY-smoothPointer.y*.45,ahead);
+  camera.updateMatrixWorld();sunProjection.copy(sunset.position).project(camera);skyU.uSunUv.value.set(sunProjection.x*.5+.5,sunProjection.y*.5+.5);
   fogColor.copy(stateColors.day).lerp(stateColors.night,night).lerp(stateColors.open,open);
   u.uTime.value=time;u.uNight.value=night;u.uOpen.value=open;u.uMotion.value=reduced.matches||annotationActive?0:1;
   u.uFogNear.value=18+open*22;u.uFogFar.value=61+open*126;scene.fog.color.copy(fogColor);scene.fog.near=u.uFogNear.value;scene.fog.far=u.uFogFar.value;
