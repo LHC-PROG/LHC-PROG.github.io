@@ -40,6 +40,14 @@
     article.append(element('h4', '', item.title), element('p', '', item.text));
     contributions.append(article);
   });
+  const domains = document.getElementById('research-domains');
+  (profile.research?.domains || []).forEach(name => domains.append(element('span', 'domain-tag', name)));
+  const findings = document.getElementById('research-findings');
+  (profile.research?.findings || []).forEach(item => {
+    const article = element('article', 'finding', '');
+    article.append(element('h4', '', item.title), element('p', '', item.text));
+    findings.append(article);
+  });
   const skills = document.getElementById('skills-grid');
   (profile.skills || []).forEach(item => {
     const article = element('article', 'skill', '');
