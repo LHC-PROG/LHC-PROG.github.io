@@ -3,11 +3,11 @@ window.PROFILE = {
   handle: 'LHC-PROG',
   title: 'LHC-PROG · 研究与实践',
   tagline: '中南大学 · 计算机科学与技术 · 大三',
-  bio: '具身智能 · 机器学习\nX-VLA 跨域研究 · PyTorch · 实验驱动',
+  bio: '具身智能 · 机器学习\n3D 视觉 · 医学影像处理',
   github: 'https://github.com/LHC-PROG',
   research: {
     title: '具身智能 · X-VLA 研究',
-    description: '围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 空间知识注入展开研究，在 CALVIN、LIBERO、RoboTwin2、VLABench 等多个仿真基准上完成系统性评测。主要发现：简单参数共享（DirectMean）是极具竞争力的强基线；复杂离线蒸馏未能超越它；VGGT 中存在超出二维网格的空间结构，但通用几何监督尚未建立稳定的动作收益。',
+    description: '围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 空间知识注入展开研究，在 Google Robot、CALVIN、LIBERO、WidowX、RoboTwin2、VLABench 六个域上完成系统性评测。主要发现：简单参数共享（DirectMean）是极具竞争力的强基线；复杂离线蒸馏未能超越它；VGGT 中存在超出二维网格的空间结构，但通用几何监督尚未建立稳定的动作收益。',
     contributions: [
       { title: '基线复现', text: '完成 X-VLA 六域模型在多个仿真环境上的部署与评测，建立模型服务、动作转换和结果记录链路。' },
       { title: '方法设计与实现', text: '设计并实现 Soft Prompt 蒸馏（参数级、行为级、轨迹级）与 VGGT 几何注入方案（GI-RGD、GCRP、Spatial Forcing），使用 PyTorch 实现训练原型并管理实验版本。' },
