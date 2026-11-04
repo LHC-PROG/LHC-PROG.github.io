@@ -1,29 +1,28 @@
-// 公开版本：只展示通用能力与经简历核实的个人贡献，不含身份、成绩与具体研究细节。
 window.PROFILE = {
   name: 'LHC-PROG',
   handle: 'LHC-PROG',
   title: 'LHC-PROG · 研究与实践',
-  tagline: '计算机科学与技术 · 本科生',
-  bio: '关注机器学习，习惯在代码与实验中理解方法。\n有模型复现、训练调试和对照评测的实践经验。',
+  tagline: '中南大学 · 计算机科学与技术 · 大三',
+  bio: '关注具身智能与机器学习。\n在课题组参与过 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何蒸馏方向的研究，经历从基线复现、方法设计到系统评测的完整实验周期。习惯在代码与实验中理解方法、在失败证据中收敛结论。',
   github: 'https://github.com/LHC-PROG',
   research: {
-    title: '机器学习模型实验',
-    description: '参与模型方法实现与训练评测，围绕实验中的问题开展分析与验证。',
+    title: '具身智能 · X-VLA 研究',
+    description: '围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 空间知识注入展开研究，在 CALVIN、LIBERO、RoboTwin2、VLABench 等多个仿真基准上完成系统性评测。主要发现：简单参数共享（DirectMean）是极具竞争力的强基线；复杂离线蒸馏未能超越它；VGGT 中存在超出二维网格的空间结构，但通用几何监督尚未建立稳定的动作收益。',
     contributions: [
-      { title: '方法实现', text: '阅读论文并梳理模型流程，使用 PyTorch 实现训练目标与实验原型。' },
-      { title: '问题定位', text: '结合梯度检查、模块隔离与参数替换分析训练异常，并验证修复方案。' },
-      { title: '对照验证', text: '比较不同实验设置，记录配置、评测结果与失效分析，保留可追溯的实验过程。' }
+      { title: '基线复现', text: '完成 X-VLA 六域模型在多个仿真环境上的部署与评测，建立模型服务、动作转换和结果记录链路。' },
+      { title: '方法设计与实现', text: '设计并实现 Soft Prompt 蒸馏（参数级、行为级、轨迹级）与 VGGT 几何注入方案（GI-RGD、GCRP、Spatial Forcing），使用 PyTorch 实现训练原型并管理实验版本。' },
+      { title: '实验调试与诊断', text: '结合梯度分析、模块隔离与参数替换定位训练异常；建立覆盖损失、表征相关性与 rollout 行为的多层诊断流程；保留完整的配置、结果与失效证据。' }
     ]
   },
   skills: [
-    { title: '编程与实现', tools: 'Python · C/C++ · Java', description: '以 Python 为主要实践语言。' },
-    { title: '深度学习', tools: 'PyTorch', description: '模型复现、训练调试与实验分析。' },
-    { title: '实验环境', tools: 'Linux · Git', description: '环境配置、版本管理与对照实验。' }
+    { title: '编程语言', tools: 'Python · C/C++ · Java', description: '以 Python 为主要实验语言，兼顾系统与工程实现。' },
+    { title: '深度学习', tools: 'PyTorch', description: '模型实现、训练调试与系统性实验分析，注重可复现的实验流程。' },
+    { title: '开发环境', tools: 'Linux · Git', description: 'Linux 日常开发与调试，Git 管理实验版本与协作。' }
   ],
   practice: {
     title: 'MiniCamp',
-    label: '黑客松 · 协作实践',
-    description: '参与活动筹备、宣传与现场执行，协助推进赞助合作，让想法在团队协作中落地。',
+    label: '黑客松 · 校园协作',
+    description: '参与 MiniCamp 2026 校园黑客松的统筹、宣传与现场执行，协助推进赞助合作落地。黑客松关乎的不只是技术——是如何在约束与压力下让想法真正走向实现。',
     url: 'https://ttesestt.nanocamp.club/minicamp/'
   }
 };
