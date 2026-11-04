@@ -7,16 +7,16 @@ window.PROFILE = {
   github: 'https://github.com/LHC-PROG',
   research: {
     title: '具身智能 · X-VLA 研究',
-    description: '围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 空间知识注入展开研究，完成六域部署与系统性评测。',
+    description: '围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 空间知识注入开展研究，完成六域模型部署与系统评测。',
     domains: ['Google Robot', 'CALVIN', 'LIBERO', 'WidowX', 'RoboTwin2', 'VLABench'],
     findings: [
-      { title: '共享基线', text: '简单参数共享（DirectMean）具有竞争力，当前复杂离线蒸馏未能超越。' },
-      { title: '几何表征', text: 'VGGT 包含超出二维网格的空间结构，但通用几何监督尚未建立稳定的动作收益。' }
+      { title: '共享基线', text: '简单参数共享（DirectMean）是有竞争力的基线；当前复杂离线蒸馏尚未超越它。' },
+      { title: '几何表征', text: 'VGGT 含有超出二维网格的空间结构，但通用几何监督尚未带来稳定的动作收益。' }
     ],
     contributions: [
-      { title: '基线复现', text: '完成 X-VLA 六域模型在多个仿真环境上的部署与评测，建立模型服务、动作转换和结果记录链路。' },
-      { title: '方法设计与实现', text: '设计并实现 Soft Prompt 蒸馏（参数级、行为级、轨迹级）与 VGGT 几何注入方案（GI-RGD、GCRP、Spatial Forcing），使用 PyTorch 实现训练原型并管理实验版本。' },
-      { title: '实验调试与诊断', text: '结合梯度分析、模块隔离与参数替换定位训练异常；建立覆盖损失、表征相关性与 rollout 行为的多层诊断流程；保留完整的配置、结果与失效证据。' }
+      { title: '基线复现', text: '完成 X-VLA 六域模型的部署与评测，贯通模型服务、动作转换与结果记录。' },
+      { title: '方法设计与实现', text: '设计并实现参数、行为、轨迹三个层面的 Soft Prompt 蒸馏，以及 GI-RGD、GCRP、Spatial Forcing 几何注入方案；用 PyTorch 搭建训练原型，管理实验版本。' },
+      { title: '实验调试与诊断', text: '通过梯度分析、模块隔离与参数替换定位训练异常，结合损失、表征相关性与 rollout 行为交叉诊断，保留配置、结果与失效证据。' }
     ]
   },
   skills: [
@@ -27,7 +27,7 @@ window.PROFILE = {
   practice: {
     title: 'MiniCamp',
     label: '黑客松 · 校园协作',
-    description: '统筹、宣传与现场执行 · 赞助对接落地',
+    description: '参与活动统筹、宣传与现场执行，协助对接赞助合作。',
     url: 'https://ttesestt.nanocamp.club/minicamp/'
   }
 };

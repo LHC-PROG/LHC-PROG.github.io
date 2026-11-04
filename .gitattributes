@@ -1,0 +1,4 @@
+*.bat text eol=crlf
+# Preserve upstream formatting in vendored sources and license texts.
+assets/vendor/** -whitespace
+assets/fonts/OFL-*.txt -whitespace

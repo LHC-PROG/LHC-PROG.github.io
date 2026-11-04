@@ -1,14 +1,9 @@
-# 视觉与交互
+# 林间视觉
 
-保留姓名、简介、研究、技能和 MiniCamp 的既有结构，使用冷白、石墨蓝、雾蓝与统一圆角。空间点阵是原生 Canvas / SVG 图形，与站点立方体标识、3D 视觉兴趣呼应；不使用环带图片或第三方品牌图标。
+参考 Dappled（https://dappled.com.au/）的沿途镜头、颗粒景观与自然氛围，场景、代码和素材独立制作，未使用参考站的模型、图片或源代码。
 
-参考阅读（2026-11-05）：
+五份植物与远山插画为原创生成素材，转换为本地 WebP；树木、草叶、石块等共用颗粒语言，随风、透视和距离雾变化。流动薄雾、光尘、萤火虫与振翅小虫处于场景空间中。
 
-- [CSS Design Awards：Long Hoang，评审分 8.96](https://www.cssdesignawards.com/sites/long-hoang/50243/)：参考空间视觉承担身份表达的思路。
-- [Curated：Yehor Kosinov](https://curated.design/sites/s/65119/) 与 [原站](https://kosinov.com/)：参考内容网格和统一对齐。
-- [Lapa Ninja：Portfolio](https://www.lapa.ninja/category/portfolio/)：参考个人介绍与作品入口的层级；浏览器预览遇到 Cloudflare 限制，只使用公开可访问的目录内容。
-- [Mobbin](https://mobbin.com/)：参考公开页面的明确动作入口；未访问付费或登录内容。
+Fraunces、Ma Shan Zheng 与 Space Grotesk 字体采用 SIL Open Font License；Three.js 采用 MIT License。许可证随各自文件提供。
 
-以上是本项目的设计归纳，未复制这些网站的图像、代码或品牌。参考列表不进入访客页面。
-
-只有真实链接和控件使用交互反馈；正文标题和六域名称是静态信息。动画尊重减少动态效果偏好，离开视口或标注时停止。GitHub Profile 使用同套配色、点阵图形、大标题和目的地按钮，通过原生链接包裹 SVG 卡片。
+中文文案按 humanizer-zh 的事实保护、精简与复读流程审校：https://github.com/syw2039/humanizer-zh/blob/main/SKILL.md 。保留原有身份、兴趣、六域、方法、结论限定与活动信息。
