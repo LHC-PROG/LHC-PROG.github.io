@@ -69,50 +69,23 @@
   const context = canvas.getContext('2d');
   let width = 0, height = 0, frame = 0, elapsed = 0, lastTime = 0;
   let remaining = 4.5, inView = true, annotating = false;
-  const points = [];
-  // A connected sphere rather than a boxed animation: longitude, latitude, depth.
-  for (let row = 1; row < 12; row++) {
-    const phi = row / 12 * Math.PI;
-    for (let col = 0; col < 24; col++) {
-      const theta = col / 24 * Math.PI * 2;
-      points.push({ x: Math.sin(phi) * Math.cos(theta), y: Math.cos(phi), z: Math.sin(phi) * Math.sin(theta), row, col });
-    }
-  }
   function drawNetwork() {
     if (!context || !width) return;
     context.clearRect(0, 0, width, height);
     const dark = root.dataset.theme === 'dark';
-    const rgb = dark ? '133,170,235' : '77,113,171';
-    const radius = Math.min(width * .36, height * .42);
-    const angle = elapsed * .14 + .4;
-    const projected = points.map(p => {
-      const x = p.x * Math.cos(angle) - p.z * Math.sin(angle);
-      const z = p.x * Math.sin(angle) + p.z * Math.cos(angle);
-      const y = p.y * .96 - z * .27;
-      const scale = 3.7 / (3.7 - z);
-      return { x: width * .51 + x * radius * scale, y: height * .49 + y * radius * scale, z };
-    });
-    projected.forEach((p, i) => {
-      const row = points[i].row, col = points[i].col;
-      const alpha = .08 + (p.z + 1) * .19;
-      for (const j of [(row - 1) * 24 + (col + 1) % 24, i + 24]) {
-        if (!projected[j]) continue;
-        const q = projected[j];
-        context.beginPath(); context.moveTo(p.x, p.y); context.lineTo(q.x, q.y);
-        context.strokeStyle = `rgba(${rgb},${alpha})`; context.lineWidth = .65; context.stroke();
+    const rgb = dark ? '145,181,245' : '55,105,204';
+    for (let layer = 0; layer < 42; layer++) {
+      const depth = layer / 41;
+      context.beginPath();
+      for (let i = 0; i <= 84; i++) {
+        const t = i / 84;
+        const x = t * width;
+        const y = height * (.52 + (depth - .5) * .58 + Math.sin(t * Math.PI * 2.1 + depth * .85 + elapsed * .10) * .135 + Math.sin(t * Math.PI * 1.25 - depth * 1.35) * .17);
+        if (i === 0) context.moveTo(x,y); else context.lineTo(x,y);
       }
-      if (i % 3 === 0) {
-        context.fillStyle = `rgba(${rgb},${alpha + .15})`;
-        context.beginPath(); context.arc(p.x, p.y, p.z > .5 ? 1.8 : 1, 0, Math.PI * 2); context.fill();
-      }
-    });
-    // An elliptical trajectory makes the diagram read as a spatial object.
-    context.beginPath(); context.ellipse(width * .51, height * .49, radius * 1.32, radius * .42, -.45, 0, Math.PI * 2);
-    context.strokeStyle = `rgba(${rgb},.18)`; context.lineWidth = .8; context.stroke();
-    const satellite = elapsed * .3 + .7;
-    const sx = Math.cos(satellite) * radius * 1.32, sy = Math.sin(satellite) * radius * .42;
-    context.beginPath(); context.arc(width * .51 + sx * .9 + sy * .435, height * .49 - sx * .435 + sy * .9, 3.1, 0, Math.PI * 2);
-    context.fillStyle = dark ? '#a1c1ff' : '#4377d7'; context.fill();
+      context.strokeStyle = `rgba(${rgb},${.13 + .27 * (1 - Math.abs(depth - .5) * 2)})`;
+      context.lineWidth = layer % 6 === 0 ? 1.15 : .7; context.stroke();
+    }
   }
   function animate(time) {
     frame = 0;
