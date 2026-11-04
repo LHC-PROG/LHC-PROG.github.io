@@ -3,7 +3,7 @@ window.PROFILE = {
   handle: 'LHC-PROG',
   title: 'LHC-PROG · 研究与实践',
   tagline: '中南大学 · 计算机科学与技术 · 大三',
-  bio: '关注具身智能与机器学习。\n在课题组参与过 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何蒸馏方向的研究，经历从基线复现、方法设计到系统评测的完整实验周期。习惯在代码与实验中理解方法、在失败证据中收敛结论。',
+  bio: '具身智能 · 机器学习\nX-VLA 跨域研究 · PyTorch · 实验驱动',
   github: 'https://github.com/LHC-PROG',
   research: {
     title: '具身智能 · X-VLA 研究',
@@ -15,14 +15,14 @@ window.PROFILE = {
     ]
   },
   skills: [
-    { title: '编程语言', tools: 'Python · C/C++ · Java', description: '以 Python 为主要实验语言，兼顾系统与工程实现。' },
-    { title: '深度学习', tools: 'PyTorch', description: '模型实现、训练调试与系统性实验分析，注重可复现的实验流程。' },
-    { title: '开发环境', tools: 'Linux · Git', description: 'Linux 日常开发与调试，Git 管理实验版本与协作。' }
+    { title: '编程语言', tools: 'Python · C/C++ · Java', description: '' },
+    { title: '深度学习', tools: 'PyTorch', description: '' },
+    { title: '开发环境', tools: 'Linux · Git', description: '' }
   ],
   practice: {
     title: 'MiniCamp',
     label: '黑客松 · 校园协作',
-    description: '参与 MiniCamp 2026 校园黑客松的统筹、宣传与现场执行，协助推进赞助合作落地。黑客松关乎的不只是技术——是如何在约束与压力下让想法真正走向实现。',
+    description: '统筹、宣传与现场执行 · 赞助对接落地',
     url: 'https://ttesestt.nanocamp.club/minicamp/'
   }
 };
