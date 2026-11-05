@@ -51,27 +51,5 @@ export function createWoodlandAnimals({mobile=false}={}){
   };
   return root;
  }
- function squirrel(){
-  const root=new THREE.Group(),body=group(root,[0,.35,0]),rust=[.56,.32,.13],light=[.74,.48,.23],cream=[.87,.77,.56];
-  shape(body,[0,0,-.04],[.22,.32,.27],rust);shape(body,[0,.01,.20],[.14,.23,.065],cream);
-  const tail=group(body,[0,-.12,-.25]);
-  const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,.18,-.35),new THREE.Vector3(0,.60,-.43),new THREE.Vector3(0,.89,-.22),new THREE.Vector3(0,.80,.02)]);
-  for(let i=0;i<15;i++){
-   const t=i/14,p=curve.getPoint(t),r=.07+Math.sin(t*Math.PI)*.12;
-   shape(tail,p.toArray(),[r,r*1.4,r],i%3?rust:light);
-  }
-  const head=group(body,[0,.36,.15]);shape(head,[0,0,0],[.17,.17,.19],light);shape(head,[0,-.065,.16],[.105,.075,.11],cream);
-  shape(head,[0,-.035,.25],[.034,.028,.025],[.12,.10,.065]);
-  const hands=[];
-  for(const side of [-1,1]){
-   shape(head,[side*.10,.18,-.03],[.06,.13,.055],rust);shape(head,[side*.10,.19,.015],[.03,.07,.015],cream);
-   shape(head,[side*.139,.02,.10],[.035,.043,.03],[.035,.04,.03]);shape(head,[side*.155,.035,.12],[.011,.014,.01],[.98,.97,.88]);
-   shape(root,[side*.17,.09,.01],[.105,.08,.19],rust);
-   const hand=group(body,[side*.14,.12,.15]);hand.rotation.z=side*.4;shape(hand,[0,-.03,.1],[.05,.06,.13],light);hands.push(hand);
-  }
-  const nut=shape(body,[0,.08,.30],[.07,.09,.065],[.42,.27,.12]);
-  root.userData.animate=t=>{tail.rotation.z=Math.sin(t*1.1)*.17;tail.rotation.x=Math.sin(t*.85)*.10;head.rotation.y=Math.sin(t*.62)*.24;head.rotation.x=Math.sin(t*3.1)*.07;hands.forEach((p,i)=>p.rotation.x=Math.sin(t*3.1+i*.2)*.10);nut.position.y=.08+Math.sin(t*3.1)*.014;body.scale.y=1+Math.sin(t*1.5)*.025};
-  return root;
- }
- return {rabbit,squirrel};
+ return {rabbit};
 }

@@ -24,3 +24,5 @@ main{position:relative;z-index:10;overflow:clip}.panel{height:var(--module-heigh
 .course-list li{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 10px}.course-name{min-width:0}.course-score{font:italic 32px/1.4 var(--serif);color:var(--gold);white-space:nowrap;flex:none}.practice .event{border:0;padding-top:0}.practice .event-name{font-size:72px;margin-bottom:25px}.practice .event .lead{font-size:26px;max-width:750px;margin-bottom:29px}.practice .action span{border:0;border-radius:0;background:transparent;font-size:30px}
 @media(max-width:760px){.course-list{gap:8px}.course-score{font-size:28px}.practice .event-name{font-size:54px;margin-bottom:23px}.practice .event .lead{font-size:23px;line-height:1.85;margin-bottom:25px}}
 @media(max-width:359px){.course-score{font-size:26px}.practice .event .lead{font-size:22px}.back-top{font-size:32px}}
+
+.control-label{transition:opacity .2s}.control-label.is-muted{opacity:0;pointer-events:none}
