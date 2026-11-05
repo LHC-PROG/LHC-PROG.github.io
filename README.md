@@ -21,4 +21,6 @@
 
 原生标注入口：在支持标注的应用内浏览器打开 https://lhc-prog.github.io/?edit=1 。进入标注模式时暂停环境动画。
 
-GitHub Pages 从 main 分支根目录发布。GitHub Profile 使用同一世界导出的动态封面，两端保持一致。
+GitHub Pages 通过 `.github/workflows/pages.yml` 发布 main 分支的网页与素材。推送后自动部署，也可在 Actions 的「Publish portfolio」中手动运行。该流程使用独立队列，避免旧的 Pages 重试阻塞；发布包只包含网站运行文件。
+
+GitHub Profile 使用同一世界导出的动态封面，两端保持一致。
