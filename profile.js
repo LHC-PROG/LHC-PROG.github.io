@@ -10,8 +10,8 @@ window.PROFILE = {
     description: '研究 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何注入，比较参数共享与蒸馏方法，在六域完成模型部署与系统评测。',
     domains: ['Google Robot', 'CALVIN', 'LIBERO', 'WidowX', 'RoboTwin2', 'VLABench'],
     findings: [
-      { title: '共享基线的竞争力', text: 'DirectMean 参数共享具有竞争力；当前复杂离线蒸馏尚未超越这一简单基线。' },
-      { title: '几何结构与动作收益', text: 'VGGT 含有超出二维网格的空间结构，但通用几何监督尚未带来稳定的动作收益。' }
+      { title: '共享基线的竞争力', text: '简单参数共享（DirectMean）在六域评测中展现竞争力；当前复杂离线蒸馏尚未超越这一基线。' },
+      { title: '几何结构与动作收益', text: 'VGGT 含有超出二维网格的空间结构，但当前通用几何监督尚未稳定改变动作相关表征，也未带来稳定的闭环收益。' }
     ],
     contributions: [
       { title: '基线复现', text: '完成 X-VLA 六域部署，贯通模型服务、动作转换与结果记录，建立可复现的评测流程。' },
@@ -24,10 +24,22 @@ window.PROFILE = {
     { title: '深度学习', tools: 'PyTorch', description: '' },
     { title: '开发环境', tools: 'Linux · Git', description: '' }
   ],
+  vision3d: {
+    title: '3D 视觉',
+    subtitle: '三维重建 · 实时 SLAM',
+    keywords: ['3D Gaussian Splatting', 'MonoGS', 'MultiSlam'],
+    description: '探索三维场景表征与实时重建，关注神经辐射场、高斯点云与单目 SLAM。'
+  },
+  medicalImaging: {
+    title: '医学影像处理',
+    subtitle: '分割 · 配准 · 诊断辅助',
+    keywords: ['多模态融合', '器官分割', '病灶检测', '图像配准'],
+    description: '关注医学场景中的计算机视觉，探索多模态影像分割、配准与智能分析。'
+  },
   practice: {
     title: 'MiniCamp',
-    label: '黑客松 · 校园协作',
-    description: '参与活动统筹、宣传与现场执行，协同推进赞助对接。',
+    label: '黑客松 · 校园创新',
+    description: '校园黑客松，汇聚技术爱好者组队交流，将想法转化为可展示的原型。',
     url: 'https://ttesestt.nanocamp.club/minicamp/'
   }
 };
