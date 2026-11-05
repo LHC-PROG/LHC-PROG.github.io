@@ -180,6 +180,7 @@ async function build(){
  function start(){if(!frame&&!document.hidden&&!capture&&!annotationActive){last=0;if(reduced.matches){progress=target;render(0)}else frame=requestAnimationFrame(animate)}}
  function stop(){cancelAnimationFrame(frame);frame=0;last=0;stats.paused=true}
  addEventListener('scroll',()=>{target=mapScroll(scrollY);if(reduced.matches||annotationActive){progress=target;render(0)}else start()},{passive:true});
+ document.addEventListener('portfolio-layoutchange',()=>{cacheAnchors();if(reduced.matches){progress=target;render(0)}else start()});
  addEventListener('resize',resize);document.fonts?.ready.then(()=>{cacheAnchors();target=mapScroll(scrollY)});
  document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
  document.addEventListener('oaiannotationmodechange',event=>{annotationActive=Boolean(event.detail?.active);if(annotationActive)stop();else start()});
