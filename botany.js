@@ -56,7 +56,7 @@ export function groundChunk(start,end,{count=1900,seed=1}={}){
   const x=z< -144?4+(rng()*2-1)*(isBank?17:43):center+side*(isBank?1.85+Math.pow(rng(),1.4)*10:2+rng()*39);
   const y=terrainHeight(x,z)+rng()*.3;
   const light=rng(),t=THREE.MathUtils.smoothstep(-z,140,180);
-  const c=[.17+light*.16+t*.14,.27+light*.2+t*.065,.075+light*.11+t*.025];
+  const c=[.17+light*.16+t*.115,.27+light*.2+t*.09,.075+light*.11+t*.035];
   pushPoint(data,[x,y,z],c,.12+rng()*.19,.55,1,rng);
  }
  return geometryFromArrays(data);
