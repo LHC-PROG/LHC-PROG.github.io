@@ -26,6 +26,7 @@ main{position:relative;z-index:10;overflow:clip}.panel{height:var(--module-heigh
 @media(max-width:359px){.course-score{font-size:26px}.practice .event .lead{font-size:22px}.back-top{font-size:32px}}
 
 .control-label{transition:opacity .2s}.control-label.is-muted{opacity:0;pointer-events:none}
+.project-contribution .action{margin-top:26px}.project-contribution .action span{border:0;border-radius:0;background:transparent;font-size:30px}
 
 /* Course labels and results stay together, with full mobile row width. */
 .contact-value{text-decoration:underline;text-decoration-color:#f1efdd66;text-decoration-thickness:1px;text-underline-offset:7px}
