@@ -11,14 +11,19 @@ export function pointData(){return{position:[],color:[],aSize:[],aLeaf:[],aSeed:
 export function pushPoint(data,p,c,size,leaf,kind,rng){data.position.push(...p);data.color.push(...c);data.aSize.push(size);data.aLeaf.push(leaf);data.aKind.push(kind);data.aSeed.push(rng()*Math.PI*2)}
 
 // Botanical illustrations become individual volumetric tree specimens, rooted at their own bases.
-export function treeGeometry(image,{grid=126,apple=false,seed=317}={}){
+export function treeGeometry(image,{grid=126,apple=false,seed=317,trunkWidth=1,canopyDrop=0}={}){
  const rng=seeded(seed),canvas=document.createElement('canvas');
  canvas.width=grid;canvas.height=Math.round(grid*image.height/image.width);
  const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0,canvas.width,canvas.height);
  const {width:w,height:h}=canvas,pixels=ctx.getImageData(0,0,w,h).data;
  let rootSum=0,rootWeight=0;
  for(let y=Math.floor(h*.9);y<h;y++)for(let x=0;x<w;x++){const a=pixels[(y*w+x)*4+3];if(a>145){rootSum+=x*a;rootWeight+=a}}
- const root=rootWeight?rootSum/rootWeight/w:.5,aspect=w/h,data=pointData();
+ const root=rootWeight?rootSum/rootWeight/w:.5,aspect=w/h,data=pointData(),barkCenters=[];
+ if(trunkWidth>1)for(let y=0;y<h;y++){
+  let sum=0,weight=0;
+  for(let x=0;x<w;x++){const i=(y*w+x)*4,r=pixels[i],g=pixels[i+1],b=pixels[i+2],a=pixels[i+3];if(a>145&&!(g>r*.94&&g>b*1.03)){sum+=x*a;weight+=a}}
+  barkCenters[y]=weight?sum/weight:w*root;
+ }
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const i=(y*w+x)*4,alpha=pixels[i+3]/255;if(alpha<.49||rng()>.68+alpha*.31)continue;
   const r=pixels[i]/255,g=pixels[i+1]/255,b=pixels[i+2]/255;
@@ -26,7 +31,9 @@ export function treeGeometry(image,{grid=126,apple=false,seed=317}={}){
   const leaf=height>.4&&g>r*.94&&g>b*1.03?1:height>.62&&luma<.59?.65:0;
   let color=apple?[r*.96,g*.97,b*.94]:leaf?[.14+luma*.31,.25+luma*.43,.075+luma*.22]:[r*.97+.04,g*.98+.045,b*.95+.045];
   color=color.map(v=>Math.min(1,v));
-  const px=((x+(rng()-.5)*.6)/w-root)*aspect,py=(h-y+(rng()-.5)*.5)/h;
+  let px=((x+(rng()-.5)*.6)/w-root)*aspect;
+  const rawHeight=(h-y+(rng()-.5)*.5)/h,py=rawHeight-canopyDrop*THREE.MathUtils.smoothstep(rawHeight,.25,.72);
+  if(trunkWidth>1&&leaf<.3){const center=(barkCenters[y]/w-root)*aspect;px=center+(px-center)*(1+(trunkWidth-1)*(1-THREE.MathUtils.smoothstep(rawHeight,.32,.64)))}
   const thickness=(leaf?.09:.035)*Math.sin(Math.PI*Math.min(.98,py+.04));
   pushPoint(data,[px,py,(rng()-.5)*thickness],color,(1.35+rng()*.9)/h,leaf,apple?3:0,rng);
  }
@@ -79,7 +86,7 @@ export function canopyGeometry(seed=1){
  const rng=seeded(seed),data=pointData();
  for(let i=0;i<15500;i++){
   const z=18-rng()*163,x=creekX(z)+(rng()*2-1)*7;
-  const y=7+Math.abs(x-creekX(z))*.35+rng()*4.5+.8*Math.sin(z*.4+x);
+  const y=6.3+Math.abs(x-creekX(z))*.35+rng()*4.1+.8*Math.sin(z*.4+x);
   const l=rng();pushPoint(data,[x,y,z],[.16+l*.26,.29+l*.3,.07+l*.14],.13+rng()*.16,1,0,rng);
  }
  return geometryFromArrays(data);

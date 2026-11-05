@@ -1,12 +1,12 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-grove4';
-import {addAtmosphere} from './atmosphere.js?v=20261105-grove4';
+import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-grove5';
+import {addAtmosphere} from './atmosphere.js?v=20261105-grove5';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
 const mobile=matchMedia('(max-width:760px)').matches;
 const stats=window.journeyDiagnostics={ready:false,engine:'loading',frames:0,progress:0,camera:null,trees:0,points:0,paused:false};
-const poster=new Image();poster.onload=()=>document.querySelector('.landscape-fallback').classList.add('has-poster');poster.src=new URL('./assets/scene-fallback.webp',import.meta.url).href;
+const poster=new Image();poster.onload=()=>document.querySelector('.landscape-fallback').classList.add('has-poster');poster.src=new URL('./assets/scene-fallback.webp?v=20261105-grove5',import.meta.url).href;
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas,alpha:false,antialias:false,powerPreference:'high-performance'});}catch{fallback()}
 if(renderer)build().catch(error=>{console.warn('Journey fallback:',error.message);renderer.dispose();fallback()});
@@ -17,7 +17,7 @@ async function build(){
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(mobile?68:57,1,.1,420);
  const rng=seeded(87197),trees=[],chunks=[],shafts=[];
  const [treeArt,slenderArt,shrubArt,appleArt,mountainArt]=await Promise.all(['eucalyptus','eucalyptus-slender','shrub','apple','mountains'].map(name=>loadIllustration(new URL(`./assets/illustrations/${name}.webp`,import.meta.url).href)));
- const baseTree=treeGeometry(treeArt,{grid:mobile?93:126}),slenderTree=treeGeometry(slenderArt,{grid:mobile?93:126,seed:647}),appleTree=treeGeometry(appleArt,{grid:mobile?144:202,apple:true});
+ const baseTree=treeGeometry(treeArt,{grid:mobile?93:126,trunkWidth:1.5,canopyDrop:.12}),slenderTree=treeGeometry(slenderArt,{grid:mobile?93:126,seed:647,trunkWidth:1.55,canopyDrop:.12}),appleTree=treeGeometry(appleArt,{grid:mobile?144:202,apple:true,trunkWidth:1.3,canopyDrop:.06});
  const fogColor=new THREE.Color(.12,.22,.17);
  const u={uTime:{value:0},uNight:{value:0},uOpen:{value:0},uMotion:{value:1},uPixel:{value:700},uFogNear:{value:20},uFogFar:{value:65},uFog:{value:fogColor}};
  const pointMaterial=new THREE.ShaderMaterial({uniforms:u,depthTest:true,depthWrite:true,transparent:false,
@@ -99,7 +99,7 @@ async function build(){
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,1.,1.);}`,
   fragmentShader:`varying vec2 vUv;uniform float uNight,uOpen,uAspect;uniform vec2 uSunUv;void main(){float h=smoothstep(0.,1.,vUv.y);vec3 day=mix(vec3(.21,.33,.25),vec3(.20,.30,.27),h);vec3 night=mix(vec3(.075,.13,.18),vec3(.045,.075,.14),h);vec3 evening=mix(vec3(.93,.60,.43),vec3(.40,.36,.52),smoothstep(.04,.95,vUv.y));vec3 c=mix(mix(day,night,uNight),evening,uOpen);vec2 q=(vUv-uSunUv)*vec2(uAspect,1.);float r=length(q);c+=vec3(.28,.17,.065)*exp(-r*r*42.)*uOpen;vec2 moon=(vUv-vec2(.74,.73))*vec2(uAspect,1.);float m=length(moon);c+=vec3(.33,.42,.50)*exp(-m*m*240.)*uNight;c+=vec3(.55,.59,.58)*(1.-smoothstep(.013,.023,m))*uNight;gl_FragColor=vec4(c,1.);}`
  }));sky.frustumCulled=false;sky.renderOrder=-100;scene.add(sky);
- const sunset=new THREE.Mesh(new THREE.PlaneGeometry(13,13),new THREE.ShaderMaterial({uniforms:{uOpen:skyU.uOpen},transparent:true,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,
+ const sunset=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.ShaderMaterial({uniforms:{uOpen:skyU.uOpen},transparent:true,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
   fragmentShader:`varying vec2 vUv;uniform float uOpen;void main(){float r=length(vUv-.5)*2.;float core=1.-smoothstep(.16,.25,r);float halo=exp(-r*r*5.);float alpha=(core*.85+halo*.35)*uOpen;gl_FragColor=vec4(mix(vec3(1.,.53,.20),vec3(1.,.94,.67),core),alpha);}`}));
  sunset.position.set(60,34,-305);scene.add(sunset);
@@ -125,7 +125,7 @@ async function build(){
  let width=0,height=0,progress=0,target=0,time=0,frame=0,last=0,anchors=[];
  let capture=false,annotationActive=false;
  const pointer={x:0,y:0},smoothPointer={x:0,y:0};
- const stateColors={day:new THREE.Color(.12,.22,.16),night:new THREE.Color(.055,.10,.145),open:new THREE.Color(.72,.55,.47)};
+ const stateColors={day:new THREE.Color(.20,.30,.235),night:new THREE.Color(.055,.10,.145),open:new THREE.Color(.72,.55,.47)};
  function cacheAnchors(){anchors=[...document.querySelectorAll('[data-stage]')].map(el=>({y:el.offsetTop,p:Number(el.dataset.stage)}));target=mapScroll(scrollY)}
  function mapScroll(y){for(let i=0;i<anchors.length-1;i++){const a=anchors[i],b=anchors[i+1];if(y<=b.y)return THREE.MathUtils.lerp(a.p,b.p,THREE.MathUtils.clamp((y-a.y)/Math.max(1,b.y-a.y),0,1))}return 1}
  function resize(){
@@ -143,7 +143,7 @@ async function build(){
   camera.updateMatrixWorld();sunProjection.copy(sunset.position).project(camera);skyU.uSunUv.value.set(sunProjection.x*.5+.5,sunProjection.y*.5+.5);
   fogColor.copy(stateColors.day).lerp(stateColors.night,night).lerp(stateColors.open,open);
   u.uTime.value=time;u.uNight.value=night;u.uOpen.value=open;u.uMotion.value=reduced.matches||annotationActive?0:1;
-  u.uFogNear.value=18+open*22;u.uFogFar.value=61+open*126;scene.fog.color.copy(fogColor);scene.fog.near=u.uFogNear.value;scene.fog.far=u.uFogFar.value;
+  u.uFogNear.value=14+night*4+open*26;u.uFogFar.value=54+night*7+open*133;scene.fog.color.copy(fogColor);scene.fog.near=u.uFogNear.value;scene.fog.far=u.uFogFar.value;
   skyU.uNight.value=night;skyU.uOpen.value=open;
   floorMaterial.color.setRGB(.11+open*.23,.19+open*.23,.105+open*.04).multiplyScalar(1-night*.62);
   mountainMaterial.opacity=open;clouds.visible=open>.02;apple.visible=progress>.4;hillDetail.visible=progress>.45;sunset.visible=open>.02;sunset.quaternion.copy(camera.quaternion);

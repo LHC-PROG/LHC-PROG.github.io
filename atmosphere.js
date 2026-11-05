@@ -1,5 +1,5 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,creekX,terrainHeight} from './botany.js?v=20261105-grove4';
+import {seeded,creekX,terrainHeight} from './botany.js?v=20261105-grove5';
 
 // Atmosphere occupies the same world as the trees: it recedes, drifts and is occluded by the banks.
 export function addAtmosphere(scene,u,{mobile=false}={}){
@@ -16,7 +16,7 @@ export function addAtmosphere(scene,u,{mobile=false}={}){
    vec2 q=vec2(vWorld.x*.20-t*.035,vWorld.z*.10+t*.018)+vUv*vec2(3.,2.);
    float n=noise(q)*.65+noise(q*2.13+4.)*.35;
    float depth=smoothstep(2.,8.,vDepth)*(1.-smoothstep(uFogFar*.65,uFogFar*1.1,vDepth));
-   float alpha=edge*smoothstep(.18,.78,n)*depth*(.17-uOpen*.065);
+   float alpha=edge*smoothstep(.12,.72,n)*depth*mix(.30,.18,uNight)*(1.-uOpen*.24);
    vec3 color=mix(vec3(.67,.72,.59),vec3(.37,.48,.58),uNight);color=mix(color,vec3(.87,.72,.58),uOpen*.65);
    gl_FragColor=vec4(mix(color,uFog,.23),alpha);
   }`
@@ -25,8 +25,8 @@ export function addAtmosphere(scene,u,{mobile=false}={}){
  for(let i=0;i<32;i++){
   const hill=i>21,z=hill?-166-(i-22)*11:17-i*8.5;
   const x=hill?(i%2?-1:1)*(13+rng()*15):creekX(z)+(rng()-.5)*8;
-  const mesh=new THREE.Mesh(quad,mistMaterial),width=hill?23+rng()*12:13+rng()*10,height=1.3+rng()*2;
-  mesh.scale.set(width,height,1);mesh.position.set(x,terrainHeight(x,z)+.5+height*.25,z);
+  const mesh=new THREE.Mesh(quad,mistMaterial),width=hill?23+rng()*12:15+rng()*11,height=2+rng()*2.8;
+  mesh.scale.set(width,height,1);mesh.position.set(x,terrainHeight(x,z)+.55+height*.30,z);
   mesh.userData={originX:x,phase:rng()*Math.PI*2};mesh.renderOrder=2;scene.add(mesh);veils.push(mesh);
  }
 
