@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,loadIllustration,treeGeometry,forestX as creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-landscape11';
-import {addAtmosphere} from './atmosphere.js?v=20261105-landscape11';
-import {addEcology} from './assets/ecology.js?v=20261105-landscape11';
+import {seeded,loadIllustration,treeGeometry,forestX as creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-breeze13';
+import {addAtmosphere} from './atmosphere.js?v=20261105-breeze13';
+import {addEcology} from './assets/ecology.js?v=20261105-breeze13';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -27,10 +27,11 @@ async function build(){
    vec3 local=position;if(aKind>6.5&&aKind<7.5)local.y+=sin(uTime*4.6+modelMatrix[3].z*.17)*pow(abs(local.x),.8)*.6*uMotion;
    if(aKind>10.5&&aKind<11.5){float flap=sin(uTime*9.*uMotion+modelMatrix[3].x);local.z+=abs(local.x)*flap*.9;local.x*=.38+.62*abs(cos(uTime*9.*uMotion+modelMatrix[3].x));}
    vec4 world=modelMatrix*vec4(local,1.);float t=uTime;
-   float sweep=mod(t*2.2,63.)-31.;float gust=exp(-pow((world.x*.7+world.z*.22-sweep)/3.3,2.));
-   float breeze=sin(t*.57+world.z*.14+world.y*.65)*.09+sin(t*.31+world.x*.6)*.045;
-   world.x+=(breeze+gust*sin(t*1.8+aSeed)*.24)*aLeaf*(.35+min(world.y,15.)*.055)*uMotion;
-   world.y+=sin(t*.48+world.z*.24)*.035*aLeaf*uMotion;
+   float gust=.5+.5*sin(t*.48-world.z*.075+world.x*.12);gust*=gust;
+   float breeze=sin(t*.57+world.z*.14+world.y*.20)*.21+sin(t*.31+world.x*.34)*.09;
+   float foliage=(aKind>.5&&aKind<1.5)?0.:aLeaf;
+   world.x+=(breeze+gust*sin(t*.85+world.z*.11+world.x*.18)*.34)*foliage*(.35+min(world.y,15.)*.055)*uMotion;
+   world.y+=sin(t*.48+world.z*.24)*.08*foliage*uMotion;
    vec3 col=color;
    if(aLeaf>.4)col=mix(col,col*vec3(1.02,1.,.97)+vec3(.006,.015,.006),uOpen*.65);
    if(aKind>1.5&&aKind<2.5){world.y+=sin(world.z*1.2-t*.9+world.x)*.025*uMotion;world.z+=sin(t*.4+world.x)*.08*uMotion;float glint=pow(max(0.,sin(world.z*1.7+world.x*3.-t*.6)),14.);col+=vec3(.28,.25,.12)*glint*(1.-uNight*.45);}

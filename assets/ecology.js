@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.js';
 import {createWoodlandAnimals} from './woodland-animals.js?v=20261105-woodland10';
-import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight,forestX as creekX} from '../botany.js?v=20261105-landscape11';
+import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight,forestX as creekX} from '../botany.js?v=20261105-breeze13';
 
 // Small inhabitants use the same point-painted material and world coordinates as the woodland.
 export function addEcology(scene,material,{mobile=false,tree}={}){
@@ -32,7 +32,7 @@ export function addEcology(scene,material,{mobile=false,tree}={}){
     const a=shrubRng()*Math.PI*2,v=shrubRng(),r=Math.sqrt(1-v*v)*(.76+shrubRng()*.24);
     const ripple=1+.09*Math.sin(a*5+v*9),px=lobe.x+Math.cos(a)*r*lobe.r*ripple,pz=lobe.z+Math.sin(a)*r*lobe.r*.85;
     const py=terrainHeight(px,pz)+.12+v*lobe.h,light=.06+v*.17+shrubRng()*.07;
-    pushPoint(shrubData,[px,py,pz],[.13+light*.63,.235+light*.91,.065+light*.34],.085+shrubRng()*.055,.5+v*.5,10,shrubRng);
+    pushPoint(shrubData,[px,py,pz],[.13+light*.63,.235+light*.91,.065+light*.34],.085+shrubRng()*.055,v*.9+.05,10,shrubRng);
    }
    for(let i=0;i<16;i++){
     const t=i/16,px=lobe.x+Math.sin(t*2.1)*.08,pz=lobe.z+t*.04;
@@ -65,7 +65,7 @@ export function addEcology(scene,material,{mobile=false,tree}={}){
  const garden=pointData(),plantCount=mobile?125:230;
  for(let i=0;i<plantCount;i++){
   const z=-176-rng()*77,x=4+(i%2?-1:1)*(3.5+rng()*25),base=terrainHeight(x,z),h=.22+rng()*.4;
-  for(let j=0;j<9;j++){const t=j/8;pushPoint(garden,[x+Math.sin(t*1.8)*.06,base+h*t,z],[.22,.38,.14],.032,.8,9,rng)}
+  for(let j=0;j<9;j++){const t=j/8;pushPoint(garden,[x+Math.sin(t*1.8)*.06,base+h*t,z],[.22,.38,.14],.032,t*t*.85,9,rng)}
   for(const side of [-1,1])for(let j=0;j<6;j++){const t=j/6;pushPoint(garden,[x+side*t*.12,base+h*.45+Math.sin(t*Math.PI)*.05,z+t*.05],[.27,.44,.18],.04,.9,9,rng)}
   const bloom=i%3!==0,color=i%4===0?[.88,.77,.37]:[.91,.90,.71];
   if(bloom)for(let petal=0;petal<5;petal++)for(let j=0;j<7;j++){
@@ -79,7 +79,7 @@ export function addEcology(scene,material,{mobile=false,tree}={}){
  for(let i=0;i<(mobile?65:110);i++){
   const z=-168-meadowRng()*73,x=4+(meadowRng()-.5)*25,h=.40+meadowRng()*.5;
   const base=terrainHeight(x,z),lean=(meadowRng()-.5)*.16,ivory=i%4!==0;
-  for(let j=0;j<12;j++){const t=j/11;pushPoint(garden,[x+lean*t,base+h*t,z],[.24,.39,.12],.035,.85,9,meadowRng)}
+  for(let j=0;j<12;j++){const t=j/11;pushPoint(garden,[x+lean*t,base+h*t,z],[.24,.39,.12],.035,t*t*.9,9,meadowRng)}
   for(let petal=0;petal<6;petal++)for(let j=0;j<12;j++){
    const a=petal*Math.PI/3,t=j/11,r=.035+t*.10;
    pushPoint(garden,[x+lean+Math.cos(a)*r,base+h+Math.sin(t*Math.PI)*.028,z+Math.sin(a)*r],ivory?[.95,.92,.75]:[.87,.66,.26],.043,.8,9,meadowRng);
@@ -91,7 +91,7 @@ export function addEcology(scene,material,{mobile=false,tree}={}){
   const z=-165-rng()*80,x=4+(rng()-.5)*32,base=terrainHeight(x,z),h=.35+rng()*.85;
   for(let blade=0;blade<3;blade++)for(let j=0;j<9;j++){
    const t=j/9,a=blade*2.4;
-   pushPoint(garden,[x+Math.cos(a)*t*t*.22,base+Math.sin(t*1.7)*h,z+Math.sin(a)*t*.17],[.26+t*.12,.40+t*.13,.13+t*.04],.027,.9,9,rng);
+   pushPoint(garden,[x+Math.cos(a)*t*t*.22,base+Math.sin(t*1.7)*h,z+Math.sin(a)*t*.17],[.26+t*.12,.40+t*.13,.13+t*.04],.027,t*t*.95,9,rng);
   }
  }
  const flowers=add(geometryFromArrays(garden));

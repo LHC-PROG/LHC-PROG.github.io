@@ -141,7 +141,7 @@ export function bankDetail(start,end,{seed=92,count=48,meadow=false}={}){
     const px=x+Math.cos(a)*reach*t,pz=z+Math.sin(a)*reach*t;
     for(const leaf of [-1,0,1]){
      const light=rng()*.13+t*.12;
-     pushPoint(data,[px+Math.sin(a)*spread*leaf,y-Math.abs(leaf)*.025,pz-Math.cos(a)*spread*leaf],[.22+light,.32+light,.09+light*.45],.045+rng()*.035,1,5,rng);
+     pushPoint(data,[px+Math.sin(a)*spread*leaf,y-Math.abs(leaf)*.025,pz-Math.cos(a)*spread*leaf],[.22+light,.32+light,.09+light*.45],.045+rng()*.035,t*t,5,rng);
     }
    }
   }
