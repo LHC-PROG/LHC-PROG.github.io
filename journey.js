@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-life7';
-import {addAtmosphere} from './atmosphere.js?v=20261105-life7';
-import {addEcology} from './assets/ecology.js?v=20261105-woodland10';
+import {seeded,loadIllustration,treeGeometry,forestX as creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-landscape11';
+import {addAtmosphere} from './atmosphere.js?v=20261105-landscape11';
+import {addEcology} from './assets/ecology.js?v=20261105-landscape11';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -18,7 +18,7 @@ async function build(){
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(mobile?68:57,1,.1,420);
  const rng=seeded(87197),trees=[],chunks=[],shafts=[];
  const [treeArt,slenderArt,shrubArt,appleArt,mountainArt]=await Promise.all(['eucalyptus','eucalyptus-slender','shrub','apple','mountains'].map(name=>loadIllustration(new URL(`./assets/illustrations/${name}.webp`,import.meta.url).href)));
- const baseTree=treeGeometry(treeArt,{grid:mobile?93:126,trunkWidth:1.5,canopyDrop:.12}),slenderTree=treeGeometry(slenderArt,{grid:mobile?93:126,seed:647,trunkWidth:1.55,canopyDrop:.12}),appleTree=treeGeometry(appleArt,{grid:mobile?144:202,apple:true,trunkWidth:1.3,canopyDrop:.06});
+ const baseTree=treeGeometry(treeArt,{grid:mobile?78:108,trunkWidth:1.5,canopyDrop:.12}),slenderTree=treeGeometry(slenderArt,{grid:mobile?78:108,seed:647,trunkWidth:1.55,canopyDrop:.12}),appleTree=treeGeometry(appleArt,{grid:mobile?250:370,apple:true,trunkWidth:1.3,canopyDrop:.06});
  const fogColor=new THREE.Color(.12,.22,.17);
  const u={uTime:{value:0},uNight:{value:0},uOpen:{value:0},uMotion:{value:1},uPixel:{value:700},uFogNear:{value:20},uFogFar:{value:65},uFog:{value:fogColor}};
  const pointMaterial=new THREE.ShaderMaterial({uniforms:u,depthTest:true,depthWrite:true,transparent:false,
@@ -74,8 +74,8 @@ async function build(){
  }
  const overhead=points(canopyGeometry(),'canopy');
  for(let z=22;z>-151;z-=17){const detail=points(bankDetail(z-17,z,{seed:890+z,count:mobile?30:58}),'bank-detail');chunks.push(detail)}
- for(let z=24;z>-290;z-=13){const land=points(groundChunk(z-13,z,{count:mobile?1100:2100,seed:500+z}),'ground');chunks.push(land);if(z>-141){const water=points(waterChunk(z-13,z,{count:mobile?1000:1900,seed:700+z}),'water');chunks.push(water)}}
- const hillDetail=points(groundChunk(-252,-151,{count:mobile?28000:53000,seed:941}),'hill');
+ for(let z=24;z>-290;z-=13){const land=points(groundChunk(z-13,z,{count:mobile?850:1450,seed:500+z}),'ground');chunks.push(land);if(z>-177){const water=points(waterChunk(z-13,z,{count:mobile?750:1250,seed:700+z}),'water');chunks.push(water)}}
+ const hillDetail=points(groundChunk(-252,-151,{count:mobile?23000:38000,seed:941}),'hill');
  for(let i=0;i<12;i++){
   const side=i%2?-1:1,z=-176-Math.floor(i/2)*15,x=4+side*(22+rng()*12),object=points(shrub,'hill-shrub'),scale=1.8+rng()*1.2;
   object.position.set(x,terrainHeight(x,z),z);object.scale.set(scale*side,scale,scale);chunks.push(object);
@@ -83,7 +83,7 @@ async function build(){
  for(let z=-166;z>-254;z-=15){const detail=points(bankDetail(z-15,z,{seed:1280+z,count:mobile?42:78,meadow:true}),'meadow-detail');chunks.push(detail)}
  const apple=points(appleTree,'apple');apple.position.set(5,terrainHeight(5,-224),-224);apple.scale.setScalar(17.6);apple.rotation.y=-.1;
  const clouds=points(cloudGeometry(),'cloud');
- const ecology=addEcology(scene,pointMaterial,{mobile});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.shrubs=ecology.shrubs;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;stats.squirrels=ecology.squirrels;stats.butterflies=ecology.butterflies;
+ const ecology=addEcology(scene,pointMaterial,{mobile,tree:apple});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.shrubs=ecology.shrubs;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;stats.squirrels=ecology.squirrels;stats.butterflies=ecology.butterflies;
  const cloudMaterial=pointMaterial.clone();cloudMaterial.uniforms=u;cloudMaterial.transparent=true;cloudMaterial.depthWrite=false;
  cloudMaterial.fragmentShader=`varying vec3 vColor;varying float vEdge;void main(){float r=length(gl_PointCoord-.5);if(r>.5||vEdge<.5)discard;gl_FragColor=vec4(vColor,(1.-smoothstep(.12,.5,r))*.55);}`;clouds.material=cloudMaterial;
 
@@ -149,15 +149,15 @@ async function build(){
  function cacheAnchors(){anchors=[...document.querySelectorAll('[data-stage]')].map(el=>({y:el.offsetTop,p:Number(el.dataset.stage)}));target=mapScroll(scrollY)}
  function mapScroll(y){for(let i=0;i<anchors.length-1;i++){const a=anchors[i],b=anchors[i+1];if(y<=b.y)return THREE.MathUtils.lerp(a.p,b.p,THREE.MathUtils.clamp((y-a.y)/Math.max(1,b.y-a.y),0,1))}return 1}
  function resize(){
-  width=innerWidth;height=innerHeight;const dpr=Math.min(devicePixelRatio||1,mobile?1.15:1.4);renderer.setPixelRatio(dpr);renderer.setSize(width,height,false);rayU.uScreenWidth.value=width*dpr;
+  width=innerWidth;height=innerHeight;const dpr=Math.min(devicePixelRatio||1,mobile?1:1.2);renderer.setPixelRatio(dpr);renderer.setSize(width,height,false);rayU.uScreenWidth.value=width*dpr;
   camera.aspect=width/height;camera.fov=mobile?68:57;camera.updateProjectionMatrix();u.uPixel.value=height*dpr/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov*.5)));insectU.uDpr.value=dpr;skyU.uAspect.value=camera.aspect;cacheAnchors();render(0);if(reduced.matches)stop();else start();
  }
  function render(delta){
   const night=THREE.MathUtils.smoothstep(progress,.28,.43)*(1-THREE.MathUtils.smoothstep(progress,.59,.72));
   const open=THREE.MathUtils.smoothstep(progress,.63,.79);
-  const z=12-progress*213,x=THREE.MathUtils.lerp(creekX(z),1.3,open);
+  const z=12-progress*213,x=THREE.MathUtils.lerp(1.8*Math.sin(z*.042)+1.1*Math.sin(z*.085+.4),1.3,open);
   const ground=terrainHeight(x,z),y=2.9+ground;
-  const ahead=z-16,lookX=THREE.MathUtils.lerp(creekX(ahead),5,open*.78),lookY=2.4+terrainHeight(lookX,ahead)+open*1.2;
+  const ahead=z-16,lookX=THREE.MathUtils.lerp(1.8*Math.sin(ahead*.042)+1.1*Math.sin(ahead*.085+.4),5,open*.78),lookY=2.4+terrainHeight(lookX,ahead)+open*1.2;
   const ease=1-Math.exp(-Math.max(delta,.016)*3.6);smoothPointer.x+=(pointer.x-smoothPointer.x)*ease;smoothPointer.y+=(pointer.y-smoothPointer.y)*ease;
   camera.position.set(x+smoothPointer.x*.6,y-smoothPointer.y*.24,z);camera.lookAt(lookX+smoothPointer.x*.9,lookY-smoothPointer.y*.45,ahead);
   camera.updateMatrixWorld();sunProjection.copy(sunset.position).project(camera);skyU.uSunUv.value.set(sunProjection.x*.5+.5,sunProjection.y*.5+.5);
@@ -167,13 +167,13 @@ async function build(){
   skyU.uNight.value=night;skyU.uOpen.value=open;
   floorMaterial.color.setRGB(.11+open*.23,.19+open*.23,.105+open*.04).multiplyScalar(1-night*.62);
   mountainMaterial.opacity=open;clouds.visible=open>.02;apple.visible=progress>.4;hillDetail.visible=progress>.45;sunset.visible=open>.02;sunset.quaternion.copy(camera.quaternion);
-  rayU.uStrength.value=THREE.MathUtils.smoothstep(progress,.78,.98)*(mobile?.75:1.);sunrays.visible=progress>.78;sunrays.quaternion.copy(camera.quaternion);ecology.update(time,progress,u.uMotion.value);stats.rabbitPositions=ecology.positions();
+  rayU.uStrength.value=THREE.MathUtils.smoothstep(progress,.78,.98)*(mobile?.75:1.);sunrays.visible=progress>.78;sunrays.quaternion.copy(camera.quaternion);ecology.update(time,progress,u.uMotion.value);stats.rabbitPositions=ecology.positions();stats.squirrelPerches=ecology.perches();
   overhead.visible=progress<.77;insects.visible=progress<.76;
   for(const tree of trees){const d=z-tree.position.z;tree.visible=d>-13&&d<u.uFogFar.value+22}
   for(const chunk of chunks){const b=chunk.geometry.boundingSphere;const center=b.center.z+chunk.position.z,d=z-center;chunk.visible=d>-21&&d<u.uFogFar.value+25}
   for(const shaft of shafts){const d=z-shaft.position.z;shaft.visible=d>-4&&d<55&&open<.5}
   atmosphere.update(camera,time,u.uFogFar.value,reduced.matches||annotationActive);
-  renderer.render(scene,camera);stats.frames++;stats.progress=Number(progress.toFixed(4));stats.night=Number(night.toFixed(3));stats.open=Number(open.toFixed(3));stats.camera={x:camera.position.x,y:camera.position.y,z:camera.position.z};stats.visibleTrees=trees.filter(t=>t.visible).length;
+  renderer.render(scene,camera);stats.drawCalls=renderer.info.render.calls;stats.renderedPoints=renderer.info.render.points;stats.frames++;stats.progress=Number(progress.toFixed(4));stats.night=Number(night.toFixed(3));stats.open=Number(open.toFixed(3));stats.camera={x:camera.position.x,y:camera.position.y,z:camera.position.z};stats.visibleTrees=trees.filter(t=>t.visible).length;
  }
  function animate(now){frame=0;if(document.hidden||capture||annotationActive){stats.paused=true;return}if(!last)last=now-34;const delta=Math.min((now-last)/1000,.06);if(mobile&&delta<1/31){frame=requestAnimationFrame(animate);return}last=now;time+=delta;progress+=(target-progress)*(1-Math.exp(-delta/.17));if(Math.abs(target-progress)<.00001)progress=target;render(delta);stats.paused=false;if(!reduced.matches)frame=requestAnimationFrame(animate)}
  function start(){if(!frame&&!document.hidden&&!capture&&!annotationActive){last=0;if(reduced.matches){progress=target;render(0)}else frame=requestAnimationFrame(animate)}}

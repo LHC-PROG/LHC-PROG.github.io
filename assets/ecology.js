@@ -1,11 +1,19 @@
 import * as THREE from './vendor/three.module.js';
 import {createWoodlandAnimals} from './woodland-animals.js?v=20261105-woodland10';
-import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight,creekX} from '../botany.js?v=20261105-life7';
+import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight,forestX as creekX} from '../botany.js?v=20261105-landscape11';
 
 // Small inhabitants use the same point-painted material and world coordinates as the woodland.
-export function addEcology(scene,material,{mobile=false}={}){
- const rng=seeded(73041),objects=[],birds=[],rabbits=[],squirrels=[],butterflies=[];let pointCount=0;
+export function addEcology(scene,material,{mobile=false,tree}={}){
+ const rng=seeded(73041),objects=[],birds=[],rabbits=[],squirrels=[],butterflies=[];let pointCount=0;const bands=[];
  const add=geometry=>{const p=new THREE.Points(geometry,material);scene.add(p);objects.push(p);pointCount+=geometry.attributes.position.count;return p};
+ function addBands(data){
+  const buckets=new Map();
+  for(let i=0;i<data.aSize.length;i++){
+   const key=Math.floor(data.position[i*3+2]/20);if(!buckets.has(key))buckets.set(key,pointData());const b=buckets.get(key);
+   for(const [name,size] of [['position',3],['color',3],['aSize',1],['aLeaf',1],['aSeed',1],['aKind',1]])for(let j=0;j<size;j++)b[name].push(data[name][i*size+j]);
+  }
+  for(const [key,data] of buckets){const p=add(geometryFromArrays(data));p.userData.z=key*20+10;bands.push(p)}
+ }
  // Asymmetric, overlapping crowns follow the ground rather than sitting on a flat plane.
  // A separate seed keeps the existing flowers and animals in their original positions.
  const shrubRng=seeded(48236),shrubData=pointData(),patches=[];
@@ -32,7 +40,7 @@ export function addEcology(scene,material,{mobile=false}={}){
    }
   }
  }
- add(geometryFromArrays(shrubData));
+ addBands(shrubData);
  // Broad-leaf understory occupies the side groves in world space, never the open hill.
  const leafScreen=pointData();
  for(let cluster=0;cluster<108;cluster++){
@@ -53,7 +61,7 @@ export function addEcology(scene,material,{mobile=false}={}){
    pushPoint(leafScreen,[x+Math.cos(a)*r*reach,y+v*2.8,z+Math.sin(a)*r*reach],[.18+light*.5,.30+light*.7,.09+light*.3],.14+shrubRng()*.10,1,10,shrubRng);
   }
  }
- add(geometryFromArrays(leafScreen));
+ addBands(leafScreen);
  const garden=pointData(),plantCount=mobile?125:230;
  for(let i=0;i<plantCount;i++){
   const z=-176-rng()*77,x=4+(i%2?-1:1)*(3.5+rng()*25),base=terrainHeight(x,z),h=.22+rng()*.4;
@@ -94,7 +102,7 @@ export function addEcology(scene,material,{mobile=false}={}){
   }
  }
  const animalFactory=createWoodlandAnimals({mobile});
- for(const [i,x,z] of [[0,5.8,-214],[1,9.5,-218]]){
+ for(const [i,x,z] of [[0,mobile?.5:1,mobile?-211:-209],[1,mobile?6:8.4,mobile?-218:-216]]){
   const p=animalFactory.rabbit();scene.add(p);p.scale.setScalar(i?1:1.15);p.userData={...p.userData,x,z,phase:i*5.3,scale:i?1:1.15};rabbits.push(p);
  }
  const bird=pointData();
@@ -110,8 +118,8 @@ export function addEcology(scene,material,{mobile=false}={}){
   const p=add(birdGeometry);p.scale.setScalar(2.1+rng()*.5);p.userData={x:(mobile?10:25)+i*3.2,y:(mobile?55:43)+Math.sin(i*1.7)*2.5,z:-244-i*4,phase:i*1.8};p.rotation.y=-.45;p.frustumCulled=false;birds.push(p);
  }
  // Russet squirrels and warm ivory butterflies share the woodland's painted geometry.
- for(const [x,z,phase] of [[3.2,-218,0],[13,-230,4]]){
-  const p=animalFactory.squirrel();scene.add(p);p.scale.setScalar(1.2);p.userData={...p.userData,x,z,phase};squirrels.push(p);
+ for(const [x,y,phase] of [[.17,.40,0],[-.13,.50,4]]){
+  const p=animalFactory.squirrel();tree.add(p);p.scale.setScalar(.55/17.6);p.position.set(x,y,.09);p.userData={...p.userData,x,y,phase};squirrels.push(p);
  }
  const butterfly=pointData();
  ellipsoid(butterfly,[0,0,0],[.022,.085,.025],60,[.24,.20,.08],.022,11);
@@ -124,8 +132,8 @@ export function addEcology(scene,material,{mobile=false}={}){
   const p=add(butterflyGeometry);p.userData={x:1.5+i*1.7,z:-212-i*2,phase:i*2.1};p.rotation.y=.3+i*.4;butterflies.push(p);
  }
  return {pointCount,plantCount,shrubs:patches.length,birds:birds.length,rabbits:rabbits.length,squirrels:squirrels.length,butterflies:butterflies.length,
-  positions:()=>rabbits.map(p=>p.position.toArray()),update(time,progress,motion){
-  const t=motion?time:0;flowers.visible=progress>.62;
+  positions:()=>rabbits.map(p=>p.position.toArray()),perches:()=>squirrels.map(p=>({onTree:p.parent===tree,scale:p.scale.x*17.6,local:p.position.toArray()})),update(time,progress,motion){
+  const t=motion?time:0;flowers.visible=progress>.62;const cameraZ=12-progress*213,far=54+THREE.MathUtils.smoothstep(progress,.63,.79)*133;for(const p of bands){const d=cameraZ-p.userData.z;p.visible=d>-20&&d<far+15;}
   for(const p of rabbits){
    const a=p.userData,cycle=(t+a.phase)%18,leg=cycle%9,forward=cycle<9,travel=Math.min(1,leg/4),path=forward?travel:1-travel;
    const x=a.x+path*2.2,z=a.z+Math.sin(path*Math.PI)*.4,hop=leg<4?Math.sin((leg%1)*Math.PI)*.42:0;
@@ -134,7 +142,7 @@ export function addEcology(scene,material,{mobile=false}={}){
    p.scale.y=a.scale*(leg<4?1+hop*.18:1+Math.sin(t*1.4+a.phase)*.015);a.animate(t+a.phase,leg%1,leg<4);
   }
   for(const p of birds){const a=p.userData;p.visible=progress>.72;p.position.set(a.x+Math.sin(t*.18+a.phase)*7,a.y+Math.sin(t*.32+a.phase)*.9,a.z+Math.cos(t*.18+a.phase)*2.5);p.rotation.z=Math.cos(t*.18+a.phase)*.15}
-  for(const p of squirrels){const a=p.userData,x=a.x+Math.sin(t*.32+a.phase)*.65,z=a.z+Math.cos(t*.32+a.phase)*.3;p.visible=progress>.78;p.position.set(x,terrainHeight(x,z)+.08,z);p.rotation.y=Math.sin(t*.32+a.phase)*.7+.8;p.rotation.x=Math.sin(t*1.2+a.phase)*.05;a.animate(t+a.phase)}
+  for(const p of squirrels){const a=p.userData;p.visible=progress>.78;p.position.set(a.x,a.y,.09);p.rotation.y=Math.sin(t*.32+a.phase)*.25+.4;p.rotation.x=Math.sin(t*1.2+a.phase)*.025;a.animate(t+a.phase)}
   for(const p of butterflies){const a=p.userData,x=a.x+Math.sin(t*.65+a.phase)*.8,z=a.z+Math.cos(t*.43+a.phase)*.65;p.visible=progress>.74;p.position.set(x,terrainHeight(x,z)+1.9+Math.sin(t*1.4+a.phase)*.32,z)}
  }};
 }

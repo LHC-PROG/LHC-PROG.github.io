@@ -1,5 +1,5 @@
 import * as THREE from './assets/vendor/three.module.js';
-import {seeded,creekX,terrainHeight} from './botany.js?v=20261105-life7';
+import {seeded,forestX as creekX,terrainHeight} from './botany.js?v=20261105-landscape11';
 
 // Atmosphere occupies the same world as the trees: it recedes, drifts and is occluded by the banks.
 export function addAtmosphere(scene,u,{mobile=false}={}){

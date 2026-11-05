@@ -34,18 +34,42 @@ export function treeGeometry(image,{grid=126,apple=false,seed=317,trunkWidth=1,c
   let px=((x+(rng()-.5)*.6)/w-root)*aspect;
   const rawHeight=(h-y+(rng()-.5)*.5)/h,py=rawHeight-canopyDrop*THREE.MathUtils.smoothstep(rawHeight,.25,.72);
   if(trunkWidth>1&&leaf<.3){const center=(barkCenters[y]/w-root)*aspect;px=center+(px-center)*(1+(trunkWidth-1)*(1-THREE.MathUtils.smoothstep(rawHeight,.32,.64)))}
-  const thickness=(leaf?.09:.035)*Math.sin(Math.PI*Math.min(.98,py+.04));
+  const thickness=(apple?(leaf?.14:.085):(leaf?.09:.035))*Math.sin(Math.PI*Math.min(.98,py+.04));
   pushPoint(data,[px,py,(rng()-.5)*thickness],color,(1.35+rng()*.9)/h,leaf,apple?3:0,rng);
+ }
+ if(apple){
+  // Fine cylindrical bark and roots add actual depth beneath the illustrated crown.
+  const barkTube=(nodes,radius)=>{
+   const curve=new THREE.CatmullRomCurve3(nodes.map(p=>new THREE.Vector3(...p)));
+   for(let i=0;i<48;i++){
+    const t=i/47,c=curve.getPoint(t),tangent=curve.getTangent(t).normalize(),axis=new THREE.Vector3(0,0,1);
+    if(Math.abs(tangent.dot(axis))>.95)axis.set(1,0,0);
+    const normal=new THREE.Vector3().crossVectors(tangent,axis).normalize(),binormal=new THREE.Vector3().crossVectors(tangent,normal);
+    for(let j=0;j<14;j++){
+     const a=j/14*Math.PI*2,r=radius*(1-t*.78)*(1+.07*Math.sin(t*75+a*3)),p=c.clone().addScaledVector(normal,Math.cos(a)*r).addScaledVector(binormal,Math.sin(a)*r),light=.07+rng()*.10+Math.cos(a)*.025;
+     pushPoint(data,p.toArray(),[.36+light,.30+light,.20+light*.8],.0027+rng()*.0012,0,3,rng);
+    }
+   }
+  };
+  for(let i=0;i<6;i++){const a=i*Math.PI/3;barkTube([[0,.08,0],[Math.cos(a)*.065,.025,Math.sin(a)*.055],[Math.cos(a)*.15,.003,Math.sin(a)*.13]],.025)}
+  barkTube([[.015,.27,.015],[.09,.37,.06],[.17,.40,.09],[.23,.415,.09]],.024);
+  barkTube([[.015,.35,.015],[-.07,.46,.06],[-.13,.50,.09],[-.20,.505,.08]],.020);
  }
  return geometryFromArrays(data);
 }
 
-export const creekX=z=>1.8*Math.sin(z*.042)+1.1*Math.sin(z*.085+.4);
+export const forestX=z=>1.8*Math.sin(z*.042)+1.1*Math.sin(z*.085+.4);
+export const creekX=z=>{
+ const forest=forestX(z),bend=THREE.MathUtils.smoothstep(-z,108,168);
+ return THREE.MathUtils.lerp(forest,-42,bend);
+};
 export function terrainHeight(x,z){
  const rising=THREE.MathUtils.smoothstep(-z,138,178);
  const hill=14.5*Math.exp(-(((z+222)/53)**2)-(((x-4)/32)**2))*rising;
  const low=.12*Math.sin(x*.6+z*.16)+.07*Math.cos(x*.32-z*.1);
- return hill+low;
+ const bank=THREE.MathUtils.smoothstep(Math.abs(x-creekX(z)),1.6,4.0);
+ const turn=THREE.MathUtils.smoothstep(-z,108,120)*(1-THREE.MathUtils.smoothstep(-z,175,190));
+ return THREE.MathUtils.lerp(hill+low,-.16,turn*(1-bank));
 }
 
 export function groundChunk(start,end,{count=1900,seed=1}={}){
