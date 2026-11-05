@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three.module.js';
 import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-life7';
 import {addAtmosphere} from './atmosphere.js?v=20261105-life7';
-import {addEcology} from './assets/ecology.js?v=20261105-life7';
+import {addEcology} from './assets/ecology.js?v=20261105-shrubs8';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -82,7 +82,7 @@ async function build(){
  for(let z=-166;z>-254;z-=15){const detail=points(bankDetail(z-15,z,{seed:1280+z,count:mobile?42:78,meadow:true}),'meadow-detail');chunks.push(detail)}
  const apple=points(appleTree,'apple');apple.position.set(5,terrainHeight(5,-224),-224);apple.scale.setScalar(17.6);apple.rotation.y=-.1;
  const clouds=points(cloudGeometry(),'cloud');
- const ecology=addEcology(scene,pointMaterial,{mobile});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;
+ const ecology=addEcology(scene,pointMaterial,{mobile});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.shrubs=ecology.shrubs;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;
  const cloudMaterial=pointMaterial.clone();cloudMaterial.uniforms=u;cloudMaterial.transparent=true;cloudMaterial.depthWrite=false;
  cloudMaterial.fragmentShader=`varying vec3 vColor;varying float vEdge;void main(){float r=length(gl_PointCoord-.5);if(r>.5||vEdge<.5)discard;gl_FragColor=vec4(vColor,(1.-smoothstep(.12,.5,r))*.55);}`;clouds.material=cloudMaterial;
 

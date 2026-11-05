@@ -1,10 +1,40 @@
 import * as THREE from './vendor/three.module.js';
-import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight} from '../botany.js?v=20261105-life7';
+import {seeded,pointData,pushPoint,geometryFromArrays,terrainHeight,creekX} from '../botany.js?v=20261105-life7';
 
 // Small inhabitants use the same point-painted material and world coordinates as the woodland.
 export function addEcology(scene,material,{mobile=false}={}){
  const rng=seeded(73041),objects=[],birds=[],rabbits=[];let pointCount=0;
  const add=geometry=>{const p=new THREE.Points(geometry,material);scene.add(p);objects.push(p);pointCount+=geometry.attributes.position.count;return p};
+ // Asymmetric, overlapping crowns follow the ground rather than sitting on a flat plane.
+ // A separate seed keeps the existing flowers and animals in their original positions.
+ const shrubRng=seeded(48236),shrubData=pointData(),patches=[];
+ for(let i=0;i<12;i++){
+  const z=4-i*12.5,side=i%2?-1:1;
+  patches.push([creekX(z)+side*(3.5+shrubRng()*3),z,.7+shrubRng()*.5,2.3+shrubRng()*1.2]);
+ }
+ patches.push([-6,-158,1.2,3.3],[11,-162,1.4,3.8],[-7.5,-173,1.2,3.4],[9,-178,1.3,3.6],
+  [-3,-186,.9,2.8],[12,-190,1.5,4],[-5,-199,1.2,3.4],[10,-201,1.3,3.6],
+  [-3.6,-214,1.1,3.4],[9.5,-222,1.25,3.7],[-6,-229,1.6,4.6],[17,-232,1.7,4.8],
+  [1,-238,1.1,3.3],[9,-242,1.2,3.3],[-11,-246,1.6,4.4],[20,-247,1.4,4.2]);
+ for(const [x,z,height,width] of patches){
+  const lobes=Array.from({length:5},(_,i)=>{
+   const a=i*2.399+shrubRng()*.5,spread=i?(.19+shrubRng()*.10)*width:0;
+   return {x:x+Math.cos(a)*spread,z:z+Math.sin(a)*spread,h:height*(i?.58+shrubRng()*.26:1),r:width*(.19+shrubRng()*.06)};
+  });
+  for(const lobe of lobes){
+   for(let i=0;i<(mobile?125:220);i++){
+    const a=shrubRng()*Math.PI*2,v=shrubRng(),r=Math.sqrt(1-v*v)*(.76+shrubRng()*.24);
+    const ripple=1+.09*Math.sin(a*5+v*9),px=lobe.x+Math.cos(a)*r*lobe.r*ripple,pz=lobe.z+Math.sin(a)*r*lobe.r*.85;
+    const py=terrainHeight(px,pz)+.12+v*lobe.h,light=.06+v*.17+shrubRng()*.07;
+    pushPoint(shrubData,[px,py,pz],[.13+light*.63,.235+light*.91,.065+light*.34],.055+shrubRng()*.04,.5+v*.5,10,shrubRng);
+   }
+   for(let i=0;i<16;i++){
+    const t=i/16,px=lobe.x+Math.sin(t*2.1)*.08,pz=lobe.z+t*.04;
+    pushPoint(shrubData,[px,terrainHeight(px,pz)+t*lobe.h*.65,pz],[.24,.255,.12],.034,0,10,shrubRng);
+   }
+  }
+ }
+ add(geometryFromArrays(shrubData));
  const garden=pointData(),plantCount=mobile?125:230;
  for(let i=0;i<plantCount;i++){
   const z=-176-rng()*77,x=4+(i%2?-1:1)*(3.5+rng()*25),base=terrainHeight(x,z),h=.22+rng()*.4;
@@ -60,7 +90,7 @@ export function addEcology(scene,material,{mobile=false}={}){
  for(let i=0;i<(mobile?3:5);i++){
   const p=add(birdGeometry);p.scale.setScalar(.95+rng()*.2);p.userData={x:(mobile?15:30)+i*(mobile?3:4.2),y:(mobile?62:48)+Math.sin(i*1.7)*1.8,z:-263-i*5,phase:i*1.8};p.rotation.y=-.45;p.frustumCulled=false;birds.push(p);
  }
- return {pointCount,plantCount,birds:birds.length,rabbits:rabbits.length,update(time,progress,motion){
+ return {pointCount,plantCount,shrubs:patches.length,birds:birds.length,rabbits:rabbits.length,update(time,progress,motion){
   const t=motion?time:0;flowers.visible=progress>.62;
   for(const p of rabbits){const a=p.userData;p.visible=progress>.77;p.position.set(a.x+Math.sin(t*.18+a.phase)*.12,terrainHeight(a.x,a.z)+.08+Math.pow(Math.max(0,Math.sin(t*.75+a.phase)-.88),2)*3,a.z);p.scale.y=a.scale*(1+Math.sin(t*1.4+a.phase)*.012)}
   for(const p of birds){const a=p.userData;p.visible=progress>.72;p.position.set(a.x+Math.sin(t*.22+a.phase)*2.1,a.y+Math.sin(t*.4+a.phase)*.24,a.z+Math.cos(t*.2+a.phase)*1.2)}
