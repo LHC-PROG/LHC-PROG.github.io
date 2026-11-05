@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three.module.js';
 import {seeded,loadIllustration,treeGeometry,creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-life7';
 import {addAtmosphere} from './atmosphere.js?v=20261105-life7';
-import {addEcology} from './assets/ecology.js?v=20261105-shrubs8';
+import {addEcology} from './assets/ecology.js?v=20261105-wildlife9';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -25,6 +25,7 @@ async function build(){
   vertexShader:`attribute float aSize,aLeaf,aSeed,aKind;varying vec3 vColor;varying float vEdge;uniform float uTime,uNight,uOpen,uMotion,uPixel,uFogNear,uFogFar;uniform vec3 uFog;
   void main(){
    vec3 local=position;if(aKind>6.5&&aKind<7.5)local.y+=sin(uTime*4.6+modelMatrix[3].z*.17)*pow(abs(local.x),.8)*.6*uMotion;
+   if(aKind>10.5&&aKind<11.5){float flap=sin(uTime*9.*uMotion+modelMatrix[3].x);local.z+=abs(local.x)*flap*.9;local.x*=.38+.62*abs(cos(uTime*9.*uMotion+modelMatrix[3].x));}
    vec4 world=modelMatrix*vec4(local,1.);float t=uTime;
    float sweep=mod(t*2.2,63.)-31.;float gust=exp(-pow((world.x*.7+world.z*.22-sweep)/3.3,2.));
    float breeze=sin(t*.57+world.z*.14+world.y*.65)*.09+sin(t*.31+world.x*.6)*.045;
@@ -82,7 +83,7 @@ async function build(){
  for(let z=-166;z>-254;z-=15){const detail=points(bankDetail(z-15,z,{seed:1280+z,count:mobile?42:78,meadow:true}),'meadow-detail');chunks.push(detail)}
  const apple=points(appleTree,'apple');apple.position.set(5,terrainHeight(5,-224),-224);apple.scale.setScalar(17.6);apple.rotation.y=-.1;
  const clouds=points(cloudGeometry(),'cloud');
- const ecology=addEcology(scene,pointMaterial,{mobile});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.shrubs=ecology.shrubs;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;
+ const ecology=addEcology(scene,pointMaterial,{mobile});stats.points+=ecology.pointCount;stats.gardenPlants=ecology.plantCount;stats.shrubs=ecology.shrubs;stats.birds=ecology.birds;stats.rabbits=ecology.rabbits;stats.squirrels=ecology.squirrels;stats.butterflies=ecology.butterflies;
  const cloudMaterial=pointMaterial.clone();cloudMaterial.uniforms=u;cloudMaterial.transparent=true;cloudMaterial.depthWrite=false;
  cloudMaterial.fragmentShader=`varying vec3 vColor;varying float vEdge;void main(){float r=length(gl_PointCoord-.5);if(r>.5||vEdge<.5)discard;gl_FragColor=vec4(vColor,(1.-smoothstep(.12,.5,r))*.55);}`;clouds.material=cloudMaterial;
 
@@ -107,15 +108,21 @@ async function build(){
   fragmentShader:`varying vec2 vUv;uniform float uOpen;void main(){float r=length(vUv-.5)*2.;float core=1.-smoothstep(.16,.25,r);float halo=exp(-r*r*5.);float alpha=(core*.85+halo*.35)*uOpen;gl_FragColor=vec4(mix(vec3(1.,.53,.20),vec3(1.,.94,.67),core),alpha);}`}));
  sunset.position.set(mobile?42:60,34,-305);scene.add(sunset);
  const rayU={uTime:u.uTime,uMotion:u.uMotion,uStrength:{value:0},uScreenWidth:{value:1},uShield:{value:mobile?.61:.44}};
- const sunrays=new THREE.Mesh(new THREE.PlaneGeometry(56,56),new THREE.ShaderMaterial({uniforms:rayU,transparent:true,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,
+ const sunrays=new THREE.Mesh(new THREE.PlaneGeometry(76,76),new THREE.ShaderMaterial({uniforms:rayU,transparent:true,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,
   vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
   fragmentShader:`varying vec2 vUv;uniform float uTime,uMotion,uStrength,uScreenWidth,uShield;
-  void main(){vec2 p=(vUv-.5)*2.;float r=length(p),a=atan(p.y,p.x),t=uTime*uMotion;
-   float beams=pow(max(0.,sin(a*11.+sin(a*5.)*.65+t*.018)),5.)*.45+pow(max(0.,sin(a*19.-sin(a*3.)*.4-t*.012)),10.)*.20;
-   float corona=exp(-r*r*6.5)*.29;float fade=(1.-smoothstep(.36,.98,r))*smoothstep(.04,.13,r);
+  float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+1.),f.x),f.y);}
+  void main(){vec2 p=(vUv-.5)*2.;float r=length(p),t=uTime*uMotion*.035;
+   float air=noise(p*5.+vec2(t,-t*.6))*.6+noise(p*11.-t*.7)*.3+noise(p*23.+t)*.1;
+   float aureole=exp(-r*r*22.)*.23+exp(-r*r*4.6)*.09;
+   float scattering=exp(-r*r*7.)*(.055+air*.12);
+   float veil=exp(-p.y*p.y*170.-p.x*p.x*3.)*.055;
+   float ring=exp(-pow((r-.28)/.095,2.))*.025;
    float protect=smoothstep(uShield,uShield+.19,gl_FragCoord.x/uScreenWidth);
-   float alpha=(beams*exp(-r*2.7)*.26+corona)*fade*uStrength*protect;
-   gl_FragColor=vec4(1.,.77,.36,alpha);}`}));sunrays.position.copy(sunset.position);scene.add(sunrays);
+   float alpha=(aureole+scattering+veil+ring)*(1.-smoothstep(.5,1.,r))*uStrength*protect;
+   vec3 warmth=mix(vec3(1.,.52,.23),vec3(1.,.74,.48),exp(-r*r*16.));
+   gl_FragColor=vec4(warmth,alpha);}`}));sunrays.position.copy(sunset.position);scene.add(sunrays);
  const sunProjection=new THREE.Vector3();
 
  const shaftMaterial=new THREE.ShaderMaterial({uniforms:{uTime:u.uTime,uNight:u.uNight},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
@@ -160,7 +167,7 @@ async function build(){
   skyU.uNight.value=night;skyU.uOpen.value=open;
   floorMaterial.color.setRGB(.11+open*.23,.19+open*.23,.105+open*.04).multiplyScalar(1-night*.62);
   mountainMaterial.opacity=open;clouds.visible=open>.02;apple.visible=progress>.4;hillDetail.visible=progress>.45;sunset.visible=open>.02;sunset.quaternion.copy(camera.quaternion);
-  rayU.uStrength.value=THREE.MathUtils.smoothstep(progress,.78,.98)*(mobile?.75:1.);sunrays.visible=progress>.78;sunrays.quaternion.copy(camera.quaternion);ecology.update(time,progress,u.uMotion.value);
+  rayU.uStrength.value=THREE.MathUtils.smoothstep(progress,.78,.98)*(mobile?.75:1.);sunrays.visible=progress>.78;sunrays.quaternion.copy(camera.quaternion);ecology.update(time,progress,u.uMotion.value);stats.rabbitPositions=ecology.positions();
   overhead.visible=progress<.77;insects.visible=progress<.76;
   for(const tree of trees){const d=z-tree.position.z;tree.visible=d>-13&&d<u.uFogFar.value+22}
   for(const chunk of chunks){const b=chunk.geometry.boundingSphere;const center=b.center.z+chunk.position.z,d=z-center;chunk.visible=d>-21&&d<u.uFogFar.value+25}
