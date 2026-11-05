@@ -118,7 +118,7 @@ export function addEcology(scene,material,{mobile=false,tree}={}){
   const p=add(birdGeometry);p.scale.setScalar(2.1+rng()*.5);p.userData={x:(mobile?10:25)+i*3.2,y:(mobile?55:43)+Math.sin(i*1.7)*2.5,z:-244-i*4,phase:i*1.8};p.rotation.y=-.45;p.frustumCulled=false;birds.push(p);
  }
  // Russet squirrels and warm ivory butterflies share the woodland's painted geometry.
- for(const [x,y,phase] of [[.17,.40,0],[-.13,.50,4]]){
+ for(const [x,y,phase] of [[.095,.385,0],[-.17,.50,4]]){
   const p=animalFactory.squirrel();tree.add(p);p.scale.setScalar(.55/17.6);p.position.set(x,y,.09);p.userData={...p.userData,x,y,phase};squirrels.push(p);
  }
  const butterfly=pointData();

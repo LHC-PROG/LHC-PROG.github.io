@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three.module.js';
 import {seeded,loadIllustration,treeGeometry,forestX as creekX,terrainHeight,groundChunk,waterChunk,canopyGeometry,cloudGeometry,bankDetail} from './botany.js?v=20261105-breeze13';
 import {addAtmosphere} from './atmosphere.js?v=20261105-breeze13';
-import {addEcology} from './assets/ecology.js?v=20261105-breeze13';
+import {addEcology} from './assets/ecology.js?v=20261105-chapters16';
 
 const canvas=document.getElementById('landscape');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)');
