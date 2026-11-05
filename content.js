@@ -45,6 +45,7 @@
  function showProgress(){pending=false;updateSections();const p=Math.max(0,Math.min(1,scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)));bar.style.transform=`scaleX(${p})`;meter.setAttribute('aria-valuenow',String(Math.round(p*100)))}
  addEventListener('scroll',()=>{revealControls();if(!pending){pending=true;requestAnimationFrame(showProgress)}},{passive:true});
  addEventListener('resize',measureModules);measureModules();
- document.fonts?.ready.then(()=>{measureModules();const hash=decodeURIComponent(location.hash.slice(1)),target=aliases[hash]||hash;if(target&&document.getElementById(target)){if(aliases[hash])history.replaceState(null,'','#'+target);document.getElementById(target).scrollIntoView({behavior:'instant'})}});
+ function routeHash(){const hash=decodeURIComponent(location.hash.slice(1)),target=aliases[hash]||hash;if(target&&document.getElementById(target)){navigationTarget=null;if(aliases[hash])history.replaceState(null,'','#'+target);document.getElementById(target).scrollIntoView({behavior:'instant'});showProgress()}}
+ addEventListener('hashchange',routeHash);document.fonts?.ready.then(()=>{measureModules();routeHash()});
  if('IntersectionObserver'in window&&!reduced.matches){document.documentElement.classList.add('can-reveal');const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.08});sections.forEach(p=>observer.observe(p));reduced.addEventListener('change',()=>{if(reduced.matches){observer.disconnect();document.documentElement.classList.remove('can-reveal')}})}
 })();
