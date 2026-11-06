@@ -43,9 +43,9 @@ window.PROFILE = {
     "status": "已结题",
     "description": "围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何注入展开研究。\n完成六域模型部署、方法实现与系统评测，保留可追溯的实验记录。",
     "stack": [
-      "Python",
       "PyTorch",
-      "Linux"
+      "VLA",
+      "3D视觉"
     ]
   },
   "zoompaper": {

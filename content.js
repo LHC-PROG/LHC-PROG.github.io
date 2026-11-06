@@ -4,7 +4,7 @@
  for(const [attribute,data] of [['data-profile',profile],['data-project',profile.project],['data-zoompaper',profile.zoompaper],['data-practice',profile.practice]])document.querySelectorAll(`[${attribute}]`).forEach(el=>{const value=data?.[el.getAttribute(attribute)];if(typeof value==='string')el.textContent=value});
  for(const [id,items] of [['interest-list',profile.interests]])for(const text of items||[]){const li=document.createElement('li');li.textContent=text;document.getElementById(id).append(li)}
  for(const item of profile.courses||[]){const li=document.createElement('li'),name=document.createElement('span'),score=document.createElement('span');name.className='course-name';name.textContent=item.name;score.className='course-score';score.textContent='（'+item.score+'）';li.append(name,score);document.getElementById('course-list').append(li)}
- document.querySelectorAll('[data-stack]').forEach(list=>{for(const keyword of profile[list.dataset.stack]?.stack||[]){const li=document.createElement('li');li.lang='en';li.textContent=keyword;list.append(li)}});
+ document.querySelectorAll('[data-stack]').forEach(list=>{for(const keyword of profile[list.dataset.stack]?.stack||[]){const li=document.createElement('li');li.lang=/[\u3400-\u9fff]/.test(keyword)?'zh-CN':'en';li.textContent=keyword;list.append(li)}});
  function renderQuote(selector,value,comma){
   if(typeof value!=='string')return;const heading=document.querySelector(selector),split=comma?value.indexOf(',')+1:value.lastIndexOf(' ');
   if(split>0)heading.replaceChildren(document.createTextNode(value.slice(0,split)),document.createElement('br'),document.createTextNode(value.slice(split).trim()));else heading.textContent=value;
