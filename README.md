@@ -2,7 +2,7 @@
 
 沿溪流前进的三维林间主页，等距排列八个模块：个人介绍、核心课程、研究兴趣、XVLA–VGGT、ZoomPaper、实践经历、联系方式、Keep moving forward！
 
-ZoomPaper 仅介绍个人参与的开源修复、Windows 兼容性与测试工作，入口指向贡献 PR：https://github.com/Flutter-Misdreavus/ZoomPaper/pull/12 。不将整个应用归为个人原创作品，也不将尚未合并的 PR 表述为已发布功能。旧的 `#statement` 链接自动转到核心课程。
+ZoomPaper 仅介绍个人参与的开源修复、Windows 兼容性与测试工作，贡献依据 PR：https://github.com/Flutter-Misdreavus/ZoomPaper/pull/12 。不将整个应用归为个人原创作品，也不将尚未合并的 PR 表述为已发布功能。两个项目的技术栈关键词使用暖金色艺术斜体，小屏以两列排布；页面不展示贡献按钮。旧的 `#statement` 链接自动转到核心课程。
 
 每次布局按最长内容统一模块高度，为正文和导航预留空间。翻页图标根据累计滚动方向切换，轻微滚动不会闪切。向下文字只在首页顶部出现，向上文字只在最后一章出现；其余位置仅显示图标，普通滚轮与触摸保持原生滚动。结尾的回到起点入口放大。旧的兴趣与研究链接自动转至对应新模块。
 

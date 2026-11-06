@@ -41,13 +41,23 @@ window.PROFILE = {
   "project": {
     "title": "XVLA–VGGT",
     "status": "已结题",
-    "description": "围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何注入展开研究。\n完成六域模型部署、方法实现与系统评测，保留可追溯的实验记录。"
+    "description": "围绕 X-VLA 跨域 Soft Prompt 共享与 VGGT 几何注入展开研究。\n完成六域模型部署、方法实现与系统评测，保留可追溯的实验记录。",
+    "stack": [
+      "Python",
+      "PyTorch",
+      "Linux"
+    ]
   },
   "zoompaper": {
     "title": "ZoomPaper",
     "status": "开源贡献",
     "description": "一款本地优先的论文阅读与知识管理应用。\n修复 API 设置与删除流程，完善 Windows 兼容性，补齐回归测试与构建验证。",
-    "url": "https://github.com/Flutter-Misdreavus/ZoomPaper/pull/12"
+    "stack": [
+      "React",
+      "TypeScript",
+      "Rust",
+      "Tauri"
+    ]
   },
   "practice": {
     "title": "MiniCamp",
