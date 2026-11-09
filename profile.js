@@ -36,7 +36,7 @@ window.PROFILE = {
   "interests": [
     "具身智能",
     "3D 视觉",
-    "医学影像处理"
+    "医学影像"
   ],
   "project": {
     "title": "XVLA–VGGT",
@@ -63,7 +63,5 @@ window.PROFILE = {
     "title": "MiniCamp",
     "description": "一场让想法落地的校园黑客松。技术爱好者在这里组队、交流，把灵感做成可展示的原型。",
     "url": "https://ttesestt.nanocamp.club/minicamp/"
-  },
-  "bio": "我是中南大学计算机科学与技术专业的 2024 级本科生，关注具身智能、3D 视觉与医学影像处理。",
-  "education": "2024 — 至今"
+  }
 };
